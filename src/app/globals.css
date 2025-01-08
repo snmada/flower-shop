@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #AA5486;
+  --secondary: #d4f0c7;
+  --white: #FBFBFB;
+  --black: #191919;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
