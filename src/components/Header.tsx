@@ -91,12 +91,12 @@ export default function Header() {
         </div>
       </div>
       {menuOpen && (
-        <nav className='md:hidden bg-gray-800 text-white py-4 px-6 space-y-4'>
+        <nav className='md:hidden bg-white text-white py-4 px-6 space-y-4'>
           {nav_items.map(({ href, label, id }) => (
             <Link
               key={href}
               href={href}
-              className={`block text-lg text-center p-2 ${activeNav === id ? 'bg-primary hover:bg-primary' : 'hover:bg-gray-700'}`}
+              className={`block text-lg text-center p-2 rounded-lg ${activeNav === id ? 'bg-primary hover:bg-primary' : 'text-black hover:bg-gray-200'}`}
               onClick={() => setMenuOpen(false)}
             >
               {label}

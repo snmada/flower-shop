@@ -5,7 +5,7 @@ export default function Hero() {
   return (
     <section 
       id='hero' 
-      className='relative mb-10 min-h-screen'
+      className='relative min-h-screen'
     >
       <div className='absolute inset-0 w-full h-full'>
         <Image
