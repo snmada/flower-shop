@@ -1,3 +1,4 @@
+'use client';
 import { ArrowRight } from 'lucide-react'; 
 import ProductCard from '@/components/LandingPage/ProductCard';
 import { LinkButton } from '@/components/ui/link-button';
@@ -5,35 +6,36 @@ import { LinkButton } from '@/components/ui/link-button';
 const products = [
   {
     id: 1,
-    imageSrc: '/',
-    alt: 'Flower Image',
-    title: 'Flower',
-    description: 'Lorem ipsum dolor sit amet.',
-    price: '$25.00',
+    name: 'Flower1',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    price: 25,
+    imageUrl: '/',
   },
   {
     id: 2,
-    imageSrc: '/',
-    alt: 'Flower Image',
-    title: 'Flower',
-    description: 'Lorem ipsum dolor sit amet.',
-    price: '$25.00',
+    name: 'Flower2',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    price: 25,
+    imageUrl: '/',
   },
   {
     id: 3,
-    imageSrc: '/',
-    alt: 'Flower Image',
-    title: 'Flower',
-    description: 'Lorem ipsum dolor sit amet.',
-    price: '$25.00',
+    name: 'Flower3',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    price: 25,
+    imageUrl: '/',
   },
 ];
 
 export default function Discover() {
+  const handleAddToCart = (productId: number) => {
+    console.log('Add to cart', productId);
+  };
+
   return (
     <section 
       id='discover' 
-      className='mb-20 flex flex-col items-center justify-center px-20 min-h-screen'
+      className='flex flex-col items-center justify-center p-20 min-h-screen bg-gradient-to-r from-[#E7EAE6] via-white to-[#E7EAE6]'
     >
       <h1 className='text-xl font-semibold text-gray-800 mb-2'>THE</h1>
       <h1 className='text-4xl font-semibold text-gray-800 mb-12 text-center'>
@@ -44,6 +46,7 @@ export default function Discover() {
           <ProductCard 
             key={product.id} 
             {...product} 
+            handleAddToCart={handleAddToCart}
           />
         ))}
       </div>
