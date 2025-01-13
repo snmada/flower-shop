@@ -8,12 +8,16 @@ export async function getAllProducts({
   category,
   flowers,
   minPrice,
-  maxPrice
+  maxPrice,
+  skip,
+  take,
 }: {
   category?: string;
   flowers?: string[];
   minPrice?: number;
   maxPrice?: number;
+  skip?: number;
+  take?: number;
 }) {
   const filterConditions: {
     category?: { name?: string };
@@ -43,20 +47,32 @@ export async function getAllProducts({
   }
 
   const products = await prisma.product.findMany({
+    skip,
+    take,
     where: filterConditions,
     include: {
       category: true,
       flowers: true,
     },
+    orderBy: {
+      name: 'asc',
+    }
   });
 
-  return products.map(product => ({
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    imageUrl: product.imageUrl,
-    category: product.category?.name,
-    flowers: product.flowers?.map(flower => flower.name),
-  }));
+  const totalProducts = await prisma.product.count({
+    where: filterConditions,
+  });
+
+  return {
+    products: products.map(product => ({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      category: product.category?.name,
+      flowers: product.flowers?.map(flower => flower.name),
+    })),
+    totalProducts,
+  } 
 }
