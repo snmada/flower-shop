@@ -3,12 +3,12 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
-  id: number;
+  id: string;
   name: string;
   description: string;
   price: number;
   imageUrl: string;
-  handleAddToCart: (id: number) => void;
+  handleAddToCart: (id: string) => void;
 }
 
 export default function ProductCard({ 
@@ -42,4 +42,4 @@ export default function ProductCard({
       </div>
     </div>
   );
-};
+}
