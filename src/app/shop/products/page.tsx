@@ -1,47 +1,39 @@
 'use client';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import Filter from '@/components/ProductsPage/Filter';
 import ProductCard from '@/components/ProductsPage/ProductCard';
-
-const products = [
-  {
-    id: 1,
-    name: 'Flower1',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    price: 56,
-    imageUrl: '/',
-    category: 'Birthday',
-    flowers: ['Rose', 'Tulip'],
-  },
-  {
-    id: 2,
-    name: 'Flower2',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    price: 25,
-    imageUrl: '/',
-    category: 'Wedding',
-    flowers: ['Lily'],
-  },
-  {
-    id: 3,
-    name: 'Flower3',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    price: 10,
-    imageUrl: '/',
-    category: 'Anniversary',
-    flowers: ['Rose', 'Orchid'],
-  },
-];
+import { useQuery } from '@tanstack/react-query';
+import { getAllProducts } from '@/actions/products';
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All categories');
   const [selectedFlowers, setSelectedFlowers] = useState<string[]>([]);
-  const [minPrice, setMinPrice] = useState<string>('');
-  const [maxPrice, setMaxPrice] = useState<string>('');
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(0);
 
-  const handleAddToCart = (productId: number) => {
+  const handleAddToCart = (productId: string) => {
     console.log('Add to cart', productId);
   };
+
+  const { data: products = [], isFetching } = useQuery({
+    queryKey: ['products', selectedCategory, selectedFlowers, minPrice, maxPrice],
+    queryFn: () =>
+      getAllProducts({
+        category: selectedCategory,
+        flowers: selectedFlowers,
+        minPrice,
+        maxPrice,
+      }),
+  });
+  
+  useEffect(() => {
+    if (isFetching) {
+      window.scrollTo({
+        top: 0, 
+      });
+    }
+  }, [isFetching]);
 
   return (
     <div className='flex flex-col lg:flex-row gap-6'>
@@ -56,29 +48,17 @@ export default function ProductsPage() {
         setMaxPrice={setMaxPrice}
       />
       <div className='flex-1'>
+        {isFetching && (
+          <p>Fetching....</p>
+        )}
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {products
-            .filter((product) => {
-              const isCategoryMatch =
-                selectedCategory === 'All categories' || product.category.includes(selectedCategory);
-              
-              const isFlowerMatch =
-                selectedFlowers.length === 0 ||
-                product.flowers.some((flower) => selectedFlowers.includes(flower));
-
-              const min = minPrice ? parseFloat(minPrice) : Number.NEGATIVE_INFINITY;
-              const max = maxPrice ? parseFloat(maxPrice) : Number.POSITIVE_INFINITY;
-              const isPriceMatch = product.price >= min && product.price <= max;
-          
-              return isCategoryMatch && isFlowerMatch && isPriceMatch;
-            })
-            .map((product) => (
-              <ProductCard
-                key={product.id}
-                {...product}
-                handleAddToCart={handleAddToCart}
-              />
-            ))}
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              {...product}
+              handleAddToCart={handleAddToCart}
+            />
+          ))}
         </div>
       </div>
     </div>

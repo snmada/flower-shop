@@ -1,4 +1,5 @@
 'use client';
+
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '@/components/ui/input';
@@ -6,19 +7,19 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { SlidersHorizontal } from 'lucide-react';
-
-const categories: string[] = ['All categories', 'Birthday', 'Wedding', 'Anniversary'];
-const flowers: string[] = ['Rose', 'Tulip', 'Lily', 'Orchid'];
+import { useQuery } from '@tanstack/react-query';
+import { getAllCategories } from '@/actions/categories';
+import { getAllFlowers } from '@/actions/flowers';
 
 interface FilterProps {
   selectedCategory: string;
   setSelectedCategory: (value: string) => void;
   selectedFlowers: string[];
   setSelectedFlowers: (value: string[]) => void;
-  minPrice: string;
-  setMinPrice: (value: string) => void;
-  maxPrice: string;
-  setMaxPrice: (value: string) => void;
+  minPrice: number;
+  setMinPrice: (value: number) => void;
+  maxPrice: number;
+  setMaxPrice: (value: number) => void;
 }
 
 export default function Filter({
@@ -30,7 +31,17 @@ export default function Filter({
   setMinPrice,
   maxPrice,
   setMaxPrice,
-}: FilterProps){
+}: FilterProps) {
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getAllCategories(),
+  });
+
+  const { data: flowers } = useQuery({
+    queryKey: ['flowers'],
+    queryFn: () => getAllFlowers(),
+  });
+
   const FilterSection = ({
     title,
     value,
@@ -51,6 +62,12 @@ export default function Filter({
               value={selectedCategory} 
               onValueChange={setSelectedCategory}
             >
+              <div className='flex items-center gap-3 p-1'>
+                <RadioGroupItem value='All categories' id='all-categories' />
+                <label htmlFor='all-categories' className='text-sm cursor-pointer'>
+                  All categories
+                </label>
+              </div>
               {options.map((option) => (
                 <div 
                   key={option} 
@@ -115,13 +132,13 @@ export default function Filter({
               <FilterSection
                 title='Category'
                 value='category'
-                options={categories}
+                options={categories || []}
                 type='radio'
               />
               <FilterSection
                 title='Flowers'
                 value='flowers'
-                options={flowers}
+                options={flowers || []}
                 type='checkbox'
               />
               <AccordionItem value='price'>
@@ -134,7 +151,7 @@ export default function Filter({
                         id='min-price'
                         placeholder='Min'
                         value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
+                        onChange={(e) => setMinPrice(Number(e.target.value))}
                       />
                     </div>
                     <span>-</span>
@@ -144,7 +161,7 @@ export default function Filter({
                         id='max-price'
                         placeholder='Max'
                         value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
+                        onChange={(e) => setMaxPrice(Number(e.target.value))}
                       />
                     </div>
                   </div>
@@ -164,26 +181,26 @@ export default function Filter({
             <FilterSection
               title='Category'
               value='category'
-              options={categories}
+              options={categories || []}
               type='radio'
             />
             <FilterSection
               title='Flowers'
               value='flowers'
-              options={flowers}
+              options={flowers || []}
               type='checkbox'
             />
             <AccordionItem value='price'>
               <AccordionTrigger>Price Range</AccordionTrigger>
               <AccordionContent>
-                <div className='flex items-center gap-4 mt-0 p-1'>
+                <div className='flex items-center gap-4 p-1'>
                   <div className='flex flex-col w-full'>
                     <Input
                       type='number'
                       id='min-price'
                       placeholder='Min'
-                      value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
+                      value={minPrice || ''}
+                      onChange={(e) => setMinPrice(Number(e.target.value))}
                     />
                   </div>
                   <span>-</span>
@@ -192,8 +209,8 @@ export default function Filter({
                       type='number'
                       id='max-price'
                       placeholder='Max'
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
+                      value={maxPrice || ''}
+                      onChange={(e) => setMaxPrice(Number(e.target.value))}
                     />
                   </div>
                 </div>
@@ -204,4 +221,4 @@ export default function Filter({
       </div>
     </div>
   );
-};
+}

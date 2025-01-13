@@ -1,0 +1,23 @@
+'use server';
+
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+export async function getAllFlowers() {
+  try {
+    const flowers = await prisma.flower.findMany({
+      select: {
+        name: true,
+      },
+      orderBy: {
+        name: 'asc',
+      }
+    });
+
+    return flowers.map(flower => flower.name);
+
+  } catch (error) {
+    console.error('Error fetching flowers:', error);
+    return [];
+  }
+}

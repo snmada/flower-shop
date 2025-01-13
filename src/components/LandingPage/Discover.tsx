@@ -5,21 +5,21 @@ import { LinkButton } from '@/components/ui/link-button';
 
 const products = [
   {
-    id: 1,
+    id: '1',
     name: 'Flower1',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     price: 25,
     imageUrl: '/',
   },
   {
-    id: 2,
+    id: '2',
     name: 'Flower2',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     price: 25,
     imageUrl: '/',
   },
   {
-    id: 3,
+    id: '3',
     name: 'Flower3',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     price: 25,
@@ -28,7 +28,7 @@ const products = [
 ];
 
 export default function Discover() {
-  const handleAddToCart = (productId: number) => {
+  const handleAddToCart = (productId: string) => {
     console.log('Add to cart', productId);
   };
 
