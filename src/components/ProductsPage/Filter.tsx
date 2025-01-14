@@ -10,6 +10,8 @@ import { SlidersHorizontal } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getAllCategories } from '@/actions/categories';
 import { getAllFlowers } from '@/actions/flowers';
+import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
 
 interface FilterProps {
   selectedCategory: string;
@@ -32,6 +34,9 @@ export default function Filter({
   maxPrice,
   setMaxPrice,
 }: FilterProps) {
+  const [tempMinPrice, setTempMinPrice] = useState(minPrice);
+  const [tempMaxPrice, setTempMaxPrice] = useState(maxPrice);
+
   const { data: categories } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
@@ -41,6 +46,14 @@ export default function Filter({
     queryKey: ['flowers'],
     queryFn: () => getAllFlowers(),
   });
+
+  const handleSearchClick = () => {
+    if (tempMinPrice > tempMaxPrice) {
+      setTempMaxPrice(tempMinPrice);
+    }
+    setMinPrice(tempMinPrice); 
+    setMaxPrice(tempMaxPrice); 
+  };
 
   const FilterSection = ({
     title,
@@ -124,7 +137,7 @@ export default function Filter({
               <SlidersHorizontal className='mr-2 h-4 w-4' /> Filters
             </Button>
           </SheetTrigger>
-          <SheetContent side='left'>
+          <SheetContent side='left' className='overflow-y-auto'>
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
@@ -144,14 +157,17 @@ export default function Filter({
               <AccordionItem value='price'>
                 <AccordionTrigger>Price Range</AccordionTrigger>
                 <AccordionContent>
-                  <div className='flex items-center gap-4 p-1'>
+                  <div className='flex items-center gap-2 p-1'>
                     <div className='flex flex-col w-full'>
                       <Input
                         type='number'
                         id='min-price'
                         placeholder='Min'
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(Number(e.target.value))}
+                        value={tempMinPrice || ''}
+                        onChange={(e) => {
+                          const value = Math.max(0, Math.floor(Number(e.target.value))); 
+                          setTempMinPrice(value);
+                        }}
                       />
                     </div>
                     <span>-</span>
@@ -160,9 +176,21 @@ export default function Filter({
                         type='number'
                         id='max-price'
                         placeholder='Max'
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(Number(e.target.value))}
+                        value={tempMaxPrice || ''}
+                        onChange={(e) => {
+                          const value = Math.max(0, Math.floor(Number(e.target.value))); 
+                          setTempMaxPrice(value);
+                        }}
                       />
+                    </div>
+                    <div className='flex flex-col w-auto'>
+                      <Button 
+                        className='w-[35px] bg-white border border-primary'
+                        onClick={handleSearchClick}
+                        disabled={!tempMinPrice || !tempMaxPrice}
+                      >
+                        <ArrowRight className='text-primary' strokeWidth={3} size={28}/>
+                      </Button>
                     </div>
                   </div>
                 </AccordionContent>
@@ -193,14 +221,17 @@ export default function Filter({
             <AccordionItem value='price'>
               <AccordionTrigger>Price Range</AccordionTrigger>
               <AccordionContent>
-                <div className='flex items-center gap-4 p-1'>
+                <div className='flex items-center gap-2 p-1'>
                   <div className='flex flex-col w-full'>
                     <Input
                       type='number'
                       id='min-price'
                       placeholder='Min'
-                      value={minPrice || ''}
-                      onChange={(e) => setMinPrice(Number(e.target.value))}
+                      value={tempMinPrice || ''}
+                      onChange={(e) => {
+                        const value = Math.max(0, Math.floor(Number(e.target.value))); 
+                        setTempMinPrice(value);
+                      }}
                     />
                   </div>
                   <span>-</span>
@@ -209,9 +240,21 @@ export default function Filter({
                       type='number'
                       id='max-price'
                       placeholder='Max'
-                      value={maxPrice || ''}
-                      onChange={(e) => setMaxPrice(Number(e.target.value))}
+                      value={tempMaxPrice || ''}
+                      onChange={(e) => {
+                        const value = Math.max(0, Math.floor(Number(e.target.value))); 
+                        setTempMaxPrice(value);
+                      }}
                     />
+                  </div>
+                  <div className='flex flex-col w-auto'>
+                    <Button 
+                      className='w-[35px] bg-white border border-primary'
+                      onClick={handleSearchClick}
+                      disabled={!tempMinPrice || !tempMaxPrice}
+                    >
+                      <ArrowRight className='text-primary' strokeWidth={3} size={28}/>
+                    </Button>
                   </div>
                 </div>
               </AccordionContent>

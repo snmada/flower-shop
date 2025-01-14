@@ -41,13 +41,10 @@ export default function ProductsPage() {
     setSkip(0);
     setViewedProducts([]); 
     setTotalProducts(0); 
-  }, [selectedCategory, selectedFlowers, minPrice, maxPrice]);
-
-  useEffect(() => {
     window.scrollTo({
       top: 0,
     });
-  }, [selectedCategory, selectedFlowers]);
+  }, [selectedCategory, selectedFlowers, minPrice, maxPrice]);
 
   useEffect(() => {
     if (data) {
