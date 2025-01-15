@@ -5,21 +5,23 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function getAllProducts({
+  name,
   category,
   flowers,
   minPrice,
   maxPrice,
   skip,
   take,
-  name,
+  sortCriteria,
 }: {
+  name?: string;
   category?: string;
   flowers?: string[];
   minPrice?: number;
   maxPrice?: number;
   skip?: number;
   take?: number;
-  name?: string;
+  sortCriteria?: string;
 }) {
   const filterConditions: {
     category?: { name?: string };
@@ -53,6 +55,27 @@ export async function getAllProducts({
     filterConditions.name = { contains: name, mode: 'insensitive' };
   }
 
+  let criteria: any = {};
+
+  if (sortCriteria) {
+    switch (sortCriteria) {
+      case 'price-asc':
+        criteria = { price: 'asc' };
+        break;
+      case 'price-desc':
+        criteria = { price: 'desc' };
+        break;
+      case 'a-z':
+        criteria = { name: 'asc' };
+        break;
+      case 'z-a':
+        criteria = { name: 'desc' };
+        break;
+      default:
+        criteria = { name: 'asc' }; 
+    }
+  }
+
   const products = await prisma.product.findMany({
     skip,
     take,
@@ -61,9 +84,7 @@ export async function getAllProducts({
       category: true,
       flowers: true,
     },
-    orderBy: {
-      name: 'asc',
-    }
+    orderBy: criteria,
   });
 
   const totalProducts = await prisma.product.count({
