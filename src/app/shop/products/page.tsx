@@ -8,10 +8,17 @@ import { getAllProducts } from '@/actions/products';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { CircleCheckBig } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
 
 const DEFAULT_TAKE_SIZE = 9;
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<string>('All categories');
   const [selectedFlowers, setSelectedFlowers] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
@@ -19,15 +26,17 @@ export default function ProductsPage() {
   const [skip, setSkip] = useState<number>(0);
   const [viewedProducts, setViewedProducts] = useState<any[]>([]); 
   const [totalProducts, setTotalProducts] = useState<number>(0); 
+  const searchName = searchParams.get('name') || '';
 
   const handleAddToCart = (productId: string) => {
     console.log('Add to cart', productId);
   };
 
   const { data, isFetching } = useQuery({
-    queryKey: ['products', selectedCategory, selectedFlowers, minPrice, maxPrice, skip],
+    queryKey: ['products', selectedCategory, selectedFlowers, minPrice, maxPrice, skip, searchName],
     queryFn: () =>
       getAllProducts({
+        name: searchName,
         category: selectedCategory,
         flowers: selectedFlowers,
         minPrice,
@@ -44,7 +53,7 @@ export default function ProductsPage() {
     window.scrollTo({
       top: 0,
     });
-  }, [selectedCategory, selectedFlowers, minPrice, maxPrice]);
+  }, [selectedCategory, selectedFlowers, minPrice, maxPrice, searchName]);
 
   useEffect(() => {
     if (data) {
@@ -56,6 +65,16 @@ export default function ProductsPage() {
   const loadMore = () => {
     setSkip((prev) => prev + DEFAULT_TAKE_SIZE);
   };
+
+  const handleSearch = useDebouncedCallback((term: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set('name', term);
+    } else {
+      params.delete('name');
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 1000);
 
   return (
     <div className='flex flex-col lg:flex-row gap-6'>
@@ -73,6 +92,16 @@ export default function ProductsPage() {
         {isFetching && (
           <p>Fetching....</p>
         )}
+        <div className='relative mb-5'>
+          <Input
+            type='text'
+            placeholder='Search by product name . . .'
+            className='pl-10 pr-3 py-5 bg-white border text-[40px]'
+            onChange={(e) => {handleSearch(e.target.value.trim())}}
+            defaultValue={searchParams.get('name')?.toString()}
+          />
+          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-primary' size={18}/>
+        </div>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
           {viewedProducts.map((product) => (
             <ProductCard

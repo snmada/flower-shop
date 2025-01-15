@@ -11,6 +11,7 @@ export async function getAllProducts({
   maxPrice,
   skip,
   take,
+  name,
 }: {
   category?: string;
   flowers?: string[];
@@ -18,11 +19,13 @@ export async function getAllProducts({
   maxPrice?: number;
   skip?: number;
   take?: number;
+  name?: string;
 }) {
   const filterConditions: {
     category?: { name?: string };
     flowers?: { some: { name: { in: string[] } } };
     price?: { gte: number; lte: number };
+    name?: { contains: string; mode: 'insensitive' };
   } = {};
 
   if (category && category !== 'All categories') {
@@ -44,6 +47,10 @@ export async function getAllProducts({
       gte: minPrice,
       lte: maxPrice,
     };
+  }
+
+  if (name) {
+    filterConditions.name = { contains: name, mode: 'insensitive' };
   }
 
   const products = await prisma.product.findMany({
