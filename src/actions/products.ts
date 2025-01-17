@@ -57,25 +57,23 @@ export async function getAllProducts({
 
   let criteria: any = {};
 
-  if (sortCriteria) {
-    switch (sortCriteria) {
-      case 'price-asc':
-        criteria = { price: 'asc' };
-        break;
-      case 'price-desc':
-        criteria = { price: 'desc' };
-        break;
-      case 'a-z':
-        criteria = { name: 'asc' };
-        break;
-      case 'z-a':
-        criteria = { name: 'desc' };
-        break;
-      default:
-        criteria = { name: 'asc' }; 
-    }
+  switch (sortCriteria) {
+    case 'price-asc':
+      criteria = { price: 'asc' };
+      break;
+    case 'price-desc':
+      criteria = { price: 'desc' };
+      break;
+    case 'a-z':
+      criteria = { name: 'asc' };
+      break;
+    case 'z-a':
+      criteria = { name: 'desc' };
+      break;
+    default:
+      criteria = { name: 'asc' }; 
   }
-
+  
   const products = await prisma.product.findMany({
     skip,
     take,
@@ -97,6 +95,7 @@ export async function getAllProducts({
       name: product.name,
       description: product.description,
       price: product.price,
+      stock: product.stock,
       imageUrl: product.imageUrl,
       category: product.category?.name,
       flowers: product.flowers?.map(flower => flower.name),
