@@ -145,13 +145,13 @@ export default function Filter({
               <FilterSection
                 title='Category'
                 value='category'
-                options={categories || []}
+                options={categories ? categories.map((category) => category.name) : []}
                 type='radio'
               />
               <FilterSection
                 title='Flowers'
                 value='flowers'
-                options={flowers || []}
+                options={flowers ? flowers.map((flower) => flower.name) : []}
                 type='checkbox'
               />
               <AccordionItem value='price'>
@@ -209,13 +209,13 @@ export default function Filter({
             <FilterSection
               title='Category'
               value='category'
-              options={categories || []}
+              options={categories ? categories.map((category) => category.name) : []}
               type='radio'
             />
             <FilterSection
               title='Flowers'
               value='flowers'
-              options={flowers || []}
+              options={flowers ? flowers.map((flower) => flower.name) : []}
               type='checkbox'
             />
             <AccordionItem value='price'>

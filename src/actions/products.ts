@@ -94,12 +94,51 @@ export async function getAllProducts({
       id: product.id,
       name: product.name,
       description: product.description,
+      imageUrl: product.imageUrl,
       price: product.price,
       stock: product.stock,
-      imageUrl: product.imageUrl,
       category: product.category?.name,
       flowers: product.flowers?.map(flower => flower.name),
     })),
     totalProducts,
   } 
+}
+
+export async function createProduct({
+  name,
+  description,
+  imageUrl,
+  price,
+  stock,
+  category,
+  flowers,
+}: {
+  name: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  stock: number;
+  category: string;
+  flowers: { id: string; name: string }[];
+}) {
+  await prisma.product.create({
+    data: {
+      name,
+      description,
+      imageUrl, 
+      price,
+      stock,
+      category: {
+        connect: {
+          id: category,
+        },
+      },
+      flowers: {
+        connect: flowers.map(flower => ({ id: flower.id })),
+      },
+    },
+  });
+  return {
+    message: 'Product created successfully',
+  };
 }

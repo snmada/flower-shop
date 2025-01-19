@@ -24,6 +24,7 @@ interface ComboboxProps {
   onChange?: (value: string) => void;
   placeholder: string;
   searchable?: boolean;
+  className?: string;
 }
 
 export default function Combobox({
@@ -32,6 +33,7 @@ export default function Combobox({
   onChange,
   placeholder,
   searchable = true,  
+  className,
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedValue || '');  
@@ -43,7 +45,7 @@ export default function Combobox({
           variant='outline'
           role='combobox'
           aria-expanded={open}
-          className='w-[200px] justify-between'
+          className={cn('w-[200px] justify-between', className)}
         >
           {value
             ? options.find((option) => option.value === value)?.label
@@ -52,7 +54,7 @@ export default function Combobox({
           <ChevronsUpDown className='opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-[200px] p-0'>
+      <PopoverContent className={cn('w-[200px] p-0', className)}>
         <Command>
           {searchable && (
             <CommandInput placeholder='Search...' />

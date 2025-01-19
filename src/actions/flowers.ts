@@ -7,6 +7,7 @@ export async function getAllFlowers() {
   try {
     const flowers = await prisma.flower.findMany({
       select: {
+        id: true,
         name: true,
       },
       orderBy: {
@@ -14,7 +15,7 @@ export async function getAllFlowers() {
       }
     });
 
-    return flowers.map(flower => flower.name);
+    return flowers;
 
   } catch (error) {
     console.error('Error fetching flowers:', error);

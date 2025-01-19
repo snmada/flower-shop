@@ -15,10 +15,13 @@ import {
   DropdownMenuSeparator 
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, TrashIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Plus } from 'lucide-react';
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function AdminProductsPage() {
+  const router = useRouter();
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -38,6 +41,15 @@ export default function AdminProductsPage() {
 
   return (
     <div className='flex flex-col gap-5 pt-3'>
+      <div className='flex justify-end'>
+        <Button 
+          onClick={() => router.push('/admin/products/add')}
+          className='bg-black text-white'
+        >
+          Add New Product
+          <Plus />
+        </Button>
+      </div>
       <DataTable
         data={products}
         columns={[
