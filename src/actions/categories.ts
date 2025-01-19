@@ -7,6 +7,7 @@ export async function getAllCategories() {
   try {
     const categories = await prisma.category.findMany({
       select: {
+        id: true,
         name: true,
       },
       orderBy: {
@@ -14,7 +15,7 @@ export async function getAllCategories() {
       }
     });
 
-    return categories.map(category => category.name);
+    return categories;
     
   } catch (error) {
     console.error('Error fetching categories:', error);
