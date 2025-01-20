@@ -1,10 +1,10 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { getAllCategories } from '@/actions/categories';
 import { getAllFlowers } from '@/actions/flowers';
 import { useQuery } from '@tanstack/react-query';
-import { createProduct } from '@/actions/products';
+import { getProductById, updateProduct } from '@/actions/products';
 import ProductForm from '@/components/ProductForm';
 
 interface ProductFormData {
@@ -17,8 +17,9 @@ interface ProductFormData {
   image: File;
 }
 
-export default function CreateProductPage() {
+export default function UpdateProductPage() {
   const router = useRouter();
+  const id = useParams().id;
 
   const { data: categories } = useQuery({
     queryKey: ['categories'],
@@ -30,12 +31,18 @@ export default function CreateProductPage() {
     queryFn: () => getAllFlowers(),
   });
 
+  const { data: product } = useQuery({
+    queryKey: ['product', id],
+    queryFn: () => getProductById(id as string),
+  });
+
   const handleCancel = () => {
     router.push('/admin/products');
   }
 
   async function onSubmit(values: ProductFormData) {
     const productData = {
+      id: product!.id,
       name: values.name,
       description: values.description,
       imageUrl: values.image.name,
@@ -44,18 +51,19 @@ export default function CreateProductPage() {
       category: values.category,
       flowers: values.flowers,
     };
-    await createProduct(productData);
+    await updateProduct(productData);
     router.push('/admin/products');
   }
 
   return (
     <div className='bg-[#FBFBFB] px-6 py-6 mt-10 rounded-lg'>
       <ProductForm
+        initialData={product}
+        onCancel={handleCancel}
         onSubmit={onSubmit}
-        onCancel={handleCancel} 
         categories={categories || []}
         flowers={flowers || []}
       />
     </div>
   );
-};
+}

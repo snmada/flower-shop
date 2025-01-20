@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -37,6 +37,10 @@ export default function Combobox({
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(selectedValue || '');  
+
+  useEffect(() => {
+    setValue(selectedValue || '');
+  }, [selectedValue]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
