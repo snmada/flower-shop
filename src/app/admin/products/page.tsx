@@ -69,6 +69,7 @@ export default function AdminProductsPage() {
             id: 'actions',
             enableHiding: false,
             cell: ({ row }) => {
+              const productId = row.original.id;
               return (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -80,10 +81,14 @@ export default function AdminProductsPage() {
                   <DropdownMenuContent align='end'>
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>View item details</DropdownMenuItem>
-                    <DropdownMenuItem>Update item</DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer'>View item details</DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer'
+                      onClick={() => router.push(`/admin/products/update/${productId}`)}
+                    >
+                      Update item
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className='flex items-center text-red-600'>
+                    <DropdownMenuItem className='flex items-center text-red-600 cursor-pointer'>
                       <TrashIcon className='w-4 h-4' />
                       Delete
                     </DropdownMenuItem>

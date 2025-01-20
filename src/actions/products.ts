@@ -142,3 +142,75 @@ export async function createProduct({
     message: 'Product created successfully',
   };
 }
+
+export async function getProductById(id: string) {
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: {
+      category: true,
+      flowers: true,
+    },
+  });
+
+  if (!product) {
+    throw new Error('Product not found');
+  }
+
+  return {
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    imageUrl: product.imageUrl,
+    price: product.price,
+    stock: product.stock,
+    category: product.category.id,
+    flowers: product.flowers.map(flower => ({
+      id: flower.id,
+      name: flower.name,
+    })),
+  };
+}
+
+export async function updateProduct({
+  id,
+  name,
+  description,
+  imageUrl,
+  price,
+  stock,
+  category,
+  flowers,
+}: {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  stock: number;
+  category: string;
+  flowers: { id: string; name: string }[];
+}) {
+  await prisma.product.update({
+    where: { id },
+    data: {
+      name,
+      description,
+      imageUrl,
+      price,
+      stock,
+      category: {
+        connect: {
+          id: category,
+        },
+      },
+      flowers: {
+        set: [],
+        connect: flowers.map(flower => ({ id: flower.id })),
+      },
+    },
+  });
+
+  return {
+    message: 'Product updated successfully',
+  };
+}
