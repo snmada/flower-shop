@@ -18,6 +18,8 @@ import { MoreHorizontal, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
 import ProductDetailsDialog from '@/components/ProductDetailsDialog';
+import { deleteProductById } from '@/actions/products';
+import ConfirmDialog from '@/components/ui/confirm-dialog';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -27,8 +29,9 @@ export default function AdminProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['products', currentPage, pageSize],
     queryFn: () =>
       getAllProducts({  
@@ -47,9 +50,33 @@ export default function AdminProductsPage() {
     setIsDialogOpen(true);
   };
   
-  const closeDialog = () => {
+  const closeDetailsDialog = () => {
     setSelectedProductId(null);
     setIsDialogOpen(false);
+  };
+
+  const confirmDelete = (productId: string) => {
+    setSelectedProductId(productId);
+    setIsConfirmDialogOpen(true);
+  };
+
+  const closeConfirmDialog = () => {
+    if (selectedProductId) {
+      setSelectedProductId(null);
+      setIsConfirmDialogOpen(false);
+    }
+  };
+
+  async function handleDeleteProduct(productId: string){
+    if (!productId) return;
+    try {
+      await deleteProductById(productId);
+      refetch(); 
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    } finally {
+      closeConfirmDialog();
+    }
   };
 
   return (
@@ -107,7 +134,10 @@ export default function AdminProductsPage() {
                       Update item
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className='flex items-center text-red-600 cursor-pointer'>
+                    <DropdownMenuItem 
+                      className='flex items-center text-red-600 cursor-pointer'
+                      onClick={() => confirmDelete(productId)}
+                    >
                       <TrashIcon className='w-4 h-4' />
                       Delete
                     </DropdownMenuItem>
@@ -133,7 +163,15 @@ export default function AdminProductsPage() {
       <ProductDetailsDialog
         productId={selectedProductId}
         isOpen={isDialogOpen}
-        onClose={closeDialog}
+        onClose={closeDetailsDialog}
+      />
+       <ConfirmDialog
+        isOpen={isConfirmDialogOpen}
+        onClose={closeConfirmDialog}
+        onConfirm={() => handleDeleteProduct(selectedProductId as string)}
+        title='Delete Product'
+        description='Are you sure you want to delete this product? This action cannot be undone.'
+        confirmButtonText='Delete'
       />
     </div>
   );

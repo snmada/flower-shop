@@ -217,3 +217,21 @@ export async function updateProduct({
     message: 'Product updated successfully',
   };
 }
+
+export async function deleteProductById(id: string) {
+  const product = await prisma.product.findUnique({
+    where: { id },
+  });
+
+  if (!product) {
+    throw new Error('Product not found');
+  }
+
+  await prisma.product.delete({
+    where: { id },
+  });
+
+  return {
+    message: 'Product deleted successfully',
+  };
+}
