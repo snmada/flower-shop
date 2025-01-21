@@ -17,6 +17,7 @@ import {
 import { MoreHorizontal, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
+import ProductDetailsDialog from '@/components/ProductDetailsDialog';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -24,6 +25,8 @@ export default function AdminProductsPage() {
   const router = useRouter();
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data } = useQuery({
     queryKey: ['products', currentPage, pageSize],
@@ -38,6 +41,16 @@ export default function AdminProductsPage() {
 
   const startIndex = (currentPage - 1) * pageSize + 1;
   const endIndex = Math.min(currentPage * pageSize, totalProducts);
+
+  const handleViewDetails = (productId: string) => {
+    setSelectedProductId(productId);
+    setIsDialogOpen(true);
+  };
+  
+  const closeDialog = () => {
+    setSelectedProductId(null);
+    setIsDialogOpen(false);
+  };
 
   return (
     <div className='flex flex-col gap-5 pt-3'>
@@ -81,8 +94,14 @@ export default function AdminProductsPage() {
                   <DropdownMenuContent align='end'>
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className='cursor-pointer'>View item details</DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer'
+                    <DropdownMenuItem 
+                      className='cursor-pointer'
+                      onClick={() => handleViewDetails(productId)}
+                    >
+                      View item details
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className='cursor-pointer'
                       onClick={() => router.push(`/admin/products/update/${productId}`)}
                     >
                       Update item
@@ -110,6 +129,11 @@ export default function AdminProductsPage() {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalItems={totalProducts}
+      />
+      <ProductDetailsDialog
+        productId={selectedProductId}
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
       />
     </div>
   );

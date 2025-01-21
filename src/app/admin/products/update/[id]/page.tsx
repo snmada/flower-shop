@@ -58,7 +58,15 @@ export default function UpdateProductPage() {
   return (
     <div className='bg-[#FBFBFB] px-6 py-6 mt-10 rounded-lg'>
       <ProductForm
-        initialData={product}
+        initialData={{
+          name: product?.name || '',
+          description: product?.description || '',
+          imageUrl: product?.imageUrl || '',
+          price: product?.price || 0,
+          stock: product?.stock || 0,
+          category: product?.category?.id || '',
+          flowers: product?.flowers || [],
+        }}
         onCancel={handleCancel}
         onSubmit={onSubmit}
         categories={categories || []}

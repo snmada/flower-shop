@@ -163,7 +163,10 @@ export async function getProductById(id: string) {
     imageUrl: product.imageUrl,
     price: product.price,
     stock: product.stock,
-    category: product.category.id,
+    category: {
+      id: product.category.id,
+      name: product.category.name,
+    },
     flowers: product.flowers.map(flower => ({
       id: flower.id,
       name: flower.name,
