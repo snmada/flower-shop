@@ -52,7 +52,7 @@ export async function getAllProducts({
   }
 
   if (name) {
-    filterConditions.name = { contains: name, mode: 'insensitive' };
+    filterConditions.name = { contains: name.trim(), mode: 'insensitive' };
   }
 
   let criteria: any = {};
@@ -233,5 +233,53 @@ export async function deleteProductById(id: string) {
 
   return {
     message: 'Product deleted successfully',
+  };
+}
+
+export async function getFeaturedProducts() {
+  const featuredProducts = await prisma.product.findMany({
+    where: {
+      isFeatured: true, 
+    },
+    include: {
+      category: true,
+      flowers: true,
+    },
+  });
+
+  return {
+    featuredProducts: featuredProducts.map(product => ({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      imageUrl: product.imageUrl,
+      price: product.price,
+      stock: product.stock,
+      category: product.category?.name,
+      flowers: product.flowers?.map(flower => flower.name),
+    })),
+  } 
+}
+
+export async function updateFeaturedProducts(productIds: string[]) {
+  await prisma.product.updateMany({
+    data: { 
+      isFeatured: false,
+    },
+  });
+
+  await prisma.product.updateMany({
+    where: {
+      id: { 
+        in: productIds,
+      },
+    },
+    data: { 
+      isFeatured: true,
+    },
+  });
+
+  return {
+    message: 'Featured products updated successfully',
   };
 }

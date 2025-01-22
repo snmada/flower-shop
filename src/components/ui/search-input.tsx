@@ -25,7 +25,7 @@ export default function SearchInput({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim();
+    const value = e.target.value;
     setInputValue(value);
     handleSearch(value);
   };
@@ -40,7 +40,7 @@ export default function SearchInput({
         className='pl-10 pr-10 py-5 bg-white border'
       />
       <Search 
-        className='absolute left-3 top-1/2 transform -translate-y-1/2 text-primary' 
+        className='absolute left-3 top-1/2 transform -translate-y-1/2 text-black' 
         size={18}
       />
       {inputValue && (
