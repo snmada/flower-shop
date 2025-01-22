@@ -23,6 +23,7 @@ model Product {
   category          Category            @relation(fields: [categoryId], references: [id])
   categoryId        String          
   flowers           Flower[]            @relation("ProductFlowers")
+  isFeatured        Boolean             @default(false)
 }
 
 model Category {
