@@ -1,33 +1,19 @@
 'use client';
+
 import { ArrowRight } from 'lucide-react'; 
 import ProductCard from '@/components/LandingPage/ProductCard';
 import { LinkButton } from '@/components/ui/link-button';
-
-const products = [
-  {
-    id: '1',
-    name: 'Flower1',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    price: 25,
-    imageUrl: '/',
-  },
-  {
-    id: '2',
-    name: 'Flower2',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    price: 25,
-    imageUrl: '/',
-  },
-  {
-    id: '3',
-    name: 'Flower3',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    price: 25,
-    imageUrl: '/',
-  },
-];
+import { getFeaturedProducts } from '@/actions/products';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Discover() {
+  const { data } = useQuery({
+    queryKey: ['featuredProducts'],
+    queryFn: getFeaturedProducts,
+  });
+
+  const { featuredProducts = [] } = data || {};
+  
   const handleAddToCart = (productId: string) => {
     console.log('Add to cart', productId);
   };
@@ -42,7 +28,7 @@ export default function Discover() {
         'You Can't Miss' COLLECTION
       </h1>
       <div className='grid grid-cols-1 xl:grid-cols-3 gap-10'>
-        {products.map((product) => (
+        {featuredProducts.map((product) => (
           <ProductCard 
             key={product.id} 
             {...product} 
