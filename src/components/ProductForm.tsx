@@ -17,6 +17,8 @@ import { Trash2, ImagePlus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Combobox from '@/components/ui/combobox';
 
+const URL_DEFAULT_IMAGE = '/default.jpg';
+
 const formSchema = z.object({
   name: 
     z.string()
@@ -24,9 +26,9 @@ const formSchema = z.object({
   description: 
     z.string()
      .min(1, 'This field is required'),
-  image: 
-    z.instanceof(File, { message: 'This field is required' })
-     .refine((file) => file instanceof File, { message: 'This field is required' }),
+  imageUrl: 
+    z.string()
+     .min(1, 'This field is required. Please upload an image or select the checkbox'),
   price: 
     z.preprocess(
      (value) => (value === '' ? 0 : Number(value)),
@@ -56,12 +58,11 @@ interface ProductFormProps {
   initialData?: {
     name: string;
     description: string;
+    imageUrl: string;
     price: number;
     stock: number;
     category: string;
     flowers: { id: string; name: string }[];
-    image?: File;
-    imageUrl: string; 
   };
   onCancel: () => void;
   onSubmit: (values: FormData) => void;
@@ -78,12 +79,14 @@ export default function ProductForm({
 }: ProductFormProps){
   const [imagePreview, setImagePreview] = useState<string | null>(initialData?.imageUrl || null);
   const [inputKey, setInputKey] = useState(0);
+  const [defaultImage, setDefaultImage] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: '',
       description: '',
+      imageUrl: '',
       price: 0,
       stock: 0,
       category: '',
@@ -94,8 +97,9 @@ export default function ProductForm({
   useEffect(() => {
     if (initialData) {
       form.reset({
-        ...initialData, 
+        ...initialData,
       });
+      setImagePreview(initialData?.imageUrl || null);
     }
   }, [initialData, form]);
 
@@ -258,68 +262,102 @@ export default function ProductForm({
           }}
         />
         <FormField
-          name='image'
+          name='imageUrl'
           control={form.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Product Image</FormLabel>
               <FormControl>
-                <div className='flex flex-col gap-3 items-center justify-center bg-white p-6 border border-gray-200 border-dashed border-4'>
-                  <label 
-                    htmlFor='file-input' 
-                    className='flex flex-col gap-3 items-center cursor-pointer'
-                  >
-                    {!imagePreview && (
-                      <>
-                      <ImagePlus 
-                        size={40}
-                        strokeWidth={0.75}
+                <div>
+                  <div className='flex flex-col gap-3 items-center justify-center bg-white p-6 border border-gray-200 border-dashed border-4'>
+                    <label
+                      htmlFor='file-input'
+                      className='flex flex-col gap-3 items-center cursor-pointer'
+                    >
+                      {!imagePreview && !defaultImage && (
+                        <>
+                        <ImagePlus 
+                          size={40} 
+                          strokeWidth={0.75} 
+                        />
+                        Choose an image
+                        </>
+                      )}
+                    </label>
+                    {!defaultImage && (
+                      <Input
+                        key={inputKey}
+                        id='file-input'
+                        type='file'
+                        accept='image/*'
+                        className='hidden'
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setImagePreview(URL.createObjectURL(file));
+                            field.onChange(file.name);
+                          }
+                        }}
                       />
-                      Choose an image
+                    )}
+                    {imagePreview && (
+                      <>
+                      <Image
+                        src={imagePreview}
+                        alt='Image preview'
+                        width={40}
+                        height={40}
+                        className='w-40 h-40 object-cover rounded-md mb-2'
+                      />
+                      {!defaultImage && (
+                        <Button
+                          onClick={() => {
+                            setImagePreview(null);
+                            setInputKey((prevKey) => prevKey + 1);
+                            form.setValue('imageUrl', '');
+                          }}
+                          className='bg-white text-red-500 border border-red-500 rounded-full p-2'
+                        >
+                          <Trash2 size={18} />
+                        </Button>
+                      )}
                       </>
                     )}
-                  </label>
-                  <Input
-                    key={inputKey}
-                    id='file-input' 
-                    type='file'
-                    accept='image/*'
-                    className='hidden'
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setImagePreview(URL.createObjectURL(file)); 
-                        field.onChange(file);
-                      }
-                    }}
-                  />
-                  {imagePreview && (
-                    <>
-                    <Image
-                      src={imagePreview}
-                      alt='Selected image preview'
-                      width={40}
-                      height={40}
-                      className='w-40 h-40 object-cover rounded-md mb-2'
-                    />
-                    <Button
-                      onClick={() => {
-                        setImagePreview(null); 
-                        setInputKey(prevKey => prevKey + 1);
-                      }}
-                      className='bg-white text-red-500 border border-red-500 rounded-full p-2'
-                    >
-                      <Trash2 size={18} />
-                    </Button>
-                    </>
-                  )}
+                  </div>
+                  <div className='mt-3 flex flex-col'>
+                    <p className='text-sm text-gray-700'>Don't have an image yet?</p>
+                    <div className='flex items-center gap-3 p-2'>
+                      <Input
+                        type='checkbox'
+                        id='default-image-checkbox'
+                        className='h-4 w-4'
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setDefaultImage(true);
+                            setImagePreview(URL_DEFAULT_IMAGE);
+                            field.onChange(URL_DEFAULT_IMAGE);
+                          } else {
+                            setDefaultImage(false);
+                            setImagePreview(null);
+                            field.onChange('');
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor='default-image-checkbox'
+                        className='text-sm text-gray-700'
+                      >
+                        Select this checkbox to set a default image
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div className='flex justify-end gap-4 mt-5'>
+        <div className='flex justify-end gap-4'>
           <Button
             className='bg-white border border-gray-300'
             onClick={onCancel}
@@ -336,5 +374,4 @@ export default function ProductForm({
       </form>
     </FormProvider>
   );
-};
-
+}

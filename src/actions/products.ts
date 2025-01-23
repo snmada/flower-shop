@@ -125,7 +125,7 @@ export async function createProduct({
     data: {
       name,
       description,
-      imageUrl, 
+      imageUrl: imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl,
       price,
       stock,
       category: {
@@ -198,7 +198,7 @@ export async function updateProduct({
     data: {
       name,
       description,
-      imageUrl,
+      imageUrl: imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl,
       price,
       stock,
       category: {
