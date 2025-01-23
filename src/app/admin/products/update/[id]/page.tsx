@@ -14,7 +14,7 @@ interface ProductFormData {
   stock: number;
   category: string;
   flowers: { id: string; name: string }[];
-  image: File;
+  imageUrl: string;
 }
 
 export default function UpdateProductPage() {
@@ -37,7 +37,7 @@ export default function UpdateProductPage() {
   });
 
   const handleCancel = () => {
-    router.push('/admin/products');
+    router.push('/admin/products/all');
   }
 
   async function onSubmit(values: ProductFormData) {
@@ -45,14 +45,14 @@ export default function UpdateProductPage() {
       id: product!.id,
       name: values.name,
       description: values.description,
-      imageUrl: values.image.name,
+      imageUrl: values.imageUrl.startsWith('/') ? values.imageUrl : '/' + values.imageUrl,
       price: values.price,
       stock: values.stock,
       category: values.category,
       flowers: values.flowers,
     };
     await updateProduct(productData);
-    router.push('/admin/products');
+    router.push('/admin/products/all');
   }
 
   return (
