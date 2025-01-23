@@ -201,7 +201,6 @@ async function main() {
     create: {
       name: 'Bouquet A',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 99.99,
       stock: 10,
       categoryId: weddingCategory.id,
@@ -217,7 +216,6 @@ async function main() {
     create: {
       name: 'Bouquet B',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 79.99,
       stock: 15,
       categoryId: birthdayCategory.id,
@@ -233,7 +231,6 @@ async function main() {
     create: {
       name: 'Bouquet C',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 89.99,
       stock: 8,
       categoryId: anniversaryCategory.id,
@@ -249,7 +246,6 @@ async function main() {
     create: {
       name: 'Bouquet D',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 110.99,
       stock: 12,
       categoryId: springCategory.id,
@@ -265,7 +261,6 @@ async function main() {
     create: {
       name: 'Bouquet E',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 125.99,
       stock: 5,
       categoryId: summerCategory.id,
@@ -281,7 +276,6 @@ async function main() {
     create: {
       name: 'Bouquet F',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 95.99,
       stock: 18,
       categoryId: weddingCategory.id,
@@ -297,7 +291,6 @@ async function main() {
     create: {
       name: 'Bouquet G',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 112.99,
       stock: 7,
       categoryId: graduationCategory.id,
@@ -313,7 +306,6 @@ async function main() {
     create: {
       name: 'Bouquet H',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 98.99,
       stock: 10,
       categoryId: autumnCategory.id,
@@ -329,7 +321,6 @@ async function main() {
     create: {
       name: 'Bouquet I',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 103.99,
       stock: 14,
       categoryId: valentinesDayCategory.id,
@@ -345,7 +336,6 @@ async function main() {
     create: {
       name: 'Bouquet J',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 109.99,
       stock: 15,
       categoryId: winterCategory.id,
@@ -361,7 +351,6 @@ async function main() {
     create: {
       name: 'Bouquet K',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 119.99,
       stock: 10,
       categoryId: anniversaryCategory.id,
@@ -377,7 +366,6 @@ async function main() {
     create: {
       name: 'Bouquet L',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 129.99,
       stock: 12,
       categoryId: weddingCategory.id,
@@ -393,7 +381,6 @@ async function main() {
     create: {
       name: 'Bouquet M',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 109.99,
       stock: 15,
       categoryId: springCategory.id,
@@ -409,7 +396,6 @@ async function main() {
     create: {
       name: 'Bouquet N',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 79.99,
       stock: 20,
       categoryId: birthdayCategory.id,
@@ -425,7 +411,6 @@ async function main() {
     create: {
       name: 'Bouquet O',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 98.99,
       stock: 18,
       categoryId: valentinesDayCategory.id,
@@ -441,7 +426,6 @@ async function main() {
     create: {
       name: 'Bouquet P',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 89.99,
       stock: 7,
       categoryId: autumnCategory.id,
@@ -457,7 +441,6 @@ async function main() {
     create: {
       name: 'Bouquet Q',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 114.99,
       stock: 10,
       categoryId: summerCategory.id,
@@ -473,7 +456,6 @@ async function main() {
     create: {
       name: 'Bouquet R',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 119.99,
       stock: 6,
       categoryId: winterCategory.id,
@@ -489,7 +471,6 @@ async function main() {
     create: {
       name: 'Bouquet S',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 94.99,
       stock: 15,
       categoryId: graduationCategory.id,
@@ -505,7 +486,6 @@ async function main() {
     create: {
       name: 'Bouquet T',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 108.99,
       stock: 11,
       categoryId: springCategory.id,
@@ -521,7 +501,6 @@ async function main() {
     create: {
       name: 'Bouquet U',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 125.99,
       stock: 9,
       categoryId: anniversaryCategory.id,
@@ -537,7 +516,6 @@ async function main() {
     create: {
       name: 'Bouquet V',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 119.99,
       stock: 18,
       categoryId: birthdayCategory.id,
@@ -553,7 +531,6 @@ async function main() {
     create: {
       name: 'Bouquet W',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 115.99,
       stock: 16,
       categoryId: weddingCategory.id,
@@ -569,7 +546,6 @@ async function main() {
     create: {
       name: 'Bouquet X',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 105.99,
       stock: 14,
       categoryId: summerCategory.id,
@@ -585,7 +561,6 @@ async function main() {
     create: {
       name: 'Bouquet Y',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 89.99,
       stock: 12,
       categoryId: summerCategory.id,
@@ -601,7 +576,6 @@ async function main() {
     create: {
       name: 'Bouquet Z',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      imageUrl: '/',
       price: 99.99,
       stock: 8,
       categoryId: autumnCategory.id,

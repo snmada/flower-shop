@@ -17,7 +17,7 @@ model Product {
   id                String              @id @default(uuid())
   name              String              @unique
   description       String
-  imageUrl          String
+  imageUrl          String              @default("/default.jpg")
   price             Float
   stock             Int                 @default(0)
   category          Category            @relation(fields: [categoryId], references: [id])
