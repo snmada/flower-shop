@@ -252,6 +252,7 @@ async function main() {
       flowers: {
         connect: [{ id: tulip.id }, { id: magnolia.id }, { id: daisy.id }, { id: rose.id }],
       },
+      isFeatured: true,
     },
   });
   
@@ -387,6 +388,7 @@ async function main() {
       flowers: {
         connect: [{ id: lavender.id }, { id: lily.id }, { id: magnolia.id }],
       },
+      isFeatured: true,
     },
   });
   
@@ -492,6 +494,7 @@ async function main() {
       flowers: {
         connect: [{ id: tulip.id }],
       },
+      isFeatured: true,
     },
   });
   
