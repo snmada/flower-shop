@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { useQuery } from '@tanstack/react-query';
 import { getAllProducts } from '@/actions/products';
+import { getAllCategories } from '@/actions/categories';
 import { DataTable } from '@/components/ui/data-table';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { 
@@ -15,15 +16,23 @@ import {
   DropdownMenuSeparator 
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, TrashIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams} from 'next/navigation';
 import { Plus } from 'lucide-react';
 import ProductDetailsDialog from '@/components/ProductDetailsDialog';
 import { deleteProductById } from '@/actions/products';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
+import SearchInput from '@/components/ui/search-input';
+import Combobox from '@/components/ui/combobox';
+import { useDebouncedCallback } from 'use-debounce';
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function AllProductsPage() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  const searchName = searchParams.get('name') || '';
+  const [selectedCategory, setSelectedCategory] = useState<string>('All categories');
   const router = useRouter();
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,15 +41,22 @@ export default function AllProductsPage() {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   const { data, refetch } = useQuery({
-    queryKey: ['products', currentPage, pageSize],
+    queryKey: ['products', currentPage, pageSize, searchName, selectedCategory],
     queryFn: () =>
-      getAllProducts({  
+      getAllProducts({
+        name: searchName,
+        category: selectedCategory,
         skip: (currentPage - 1) * pageSize,
         take: pageSize
       }),
   });
 
   const { products = [], totalProducts = 0 } = data || {};
+
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getAllCategories(),
+  });
 
   const startIndex = (currentPage - 1) * pageSize + 1;
   const endIndex = Math.min(currentPage * pageSize, totalProducts);
@@ -79,6 +95,16 @@ export default function AllProductsPage() {
     }
   };
 
+  const handleSearch = useDebouncedCallback((term: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set('name', term);
+    } else {
+      params.delete('name');
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 300);
+
   return (
     <div className='flex flex-col gap-5 pt-3'>
       <div className='flex justify-end'>
@@ -89,6 +115,44 @@ export default function AllProductsPage() {
           Add New Product
           <Plus />
         </Button>
+      </div>
+      <div className='p-5 my-5 rounded-md bg-white border border-gray-200'>
+        <SearchInput
+          value={searchParams.get('name')?.toString() || ''}
+          handleSearch={handleSearch}
+          placeholder='Search by product name . . .'
+        />
+        <div className='flex flex-row gap-2 items-center justify-end'>
+          <p>Choose category</p>
+          <Combobox
+            options={
+              categories
+                ? categories.map((category) => ({
+                    value: category.id,
+                    label: category.name,
+                  }))
+                : []
+            }
+            value={categories?.find((category) => category.name === selectedCategory)?.id || ''}
+            onChange={(value) => {
+              const selectedCategoryName = categories?.find((category) => category.id === value)?.name;
+              if (selectedCategoryName) {
+                setSelectedCategory(selectedCategoryName);
+              }
+            }}
+            placeholder='See options'
+            searchable={false}
+          />
+          {selectedCategory !== 'All categories' && (
+            <Button
+              variant='outline'
+              onClick={() => setSelectedCategory('All categories')}
+              className='ml-2'
+            >
+              Reset
+            </Button>
+          )}
+        </div>
       </div>
       <DataTable
         data={products}
