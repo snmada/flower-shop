@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/ui/app-sidebar';
+import DynamicBreadcrumb from '@/components/DynamicBreadcrumb';
 
 export default function AdminLayout({
   children,
@@ -10,7 +11,10 @@ export default function AdminLayout({
     <SidebarProvider>
       <AppSidebar />
       <div className='container mx-auto p-6 min-h-screen'>
-        <SidebarTrigger />
+        <div className='flex flex-row items-center'>
+          <SidebarTrigger />
+          <DynamicBreadcrumb />
+        </div>
         {children}
       </div>
     </SidebarProvider>

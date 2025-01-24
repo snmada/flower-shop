@@ -23,7 +23,7 @@ import ConfirmDialog from '@/components/ui/confirm-dialog';
 
 const DEFAULT_PAGE_SIZE = 10;
 
-export default function AdminProductsPage() {
+export default function AllProductsPage() {
   const router = useRouter();
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
