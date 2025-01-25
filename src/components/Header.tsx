@@ -5,11 +5,13 @@ import { ShoppingCart, Menu } from 'lucide-react';
 import { montserrat} from '@/app/fonts';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useCart } from '@/context/CartContext';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const pathname = usePathname();
   const [activeNav, setActiveNav] = useState<string>('');
+  const { cartCount } = useCart();
 
   const nav_items = [
     { href: '/', label: 'Home', id: 'hero' },
@@ -83,7 +85,12 @@ export default function Header() {
             <div className='relative'>
               <Link href='/shop/cart'>
                 <div className='relative'>
-                  <ShoppingCart className='text-xl cursor-pointer hover:text-primary' />
+                  <ShoppingCart className='text-xl cursor-pointer hover:text-gray-400' />
+                  {cartCount > 0 && (
+                    <span className='absolute -top-3 -right-4 bg-primary text-white text-xs rounded-full w-6 h-6 flex items-center justify-center'>
+                      {cartCount}
+                    </span>
+                  )}
                 </div>
               </Link>
             </div>
