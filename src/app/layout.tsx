@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { montserrat } from './fonts';
 import './globals.css';
 import ReactQueryProvider from '@/lib/Providers/ReactQueryProvider';
+import { CartProvider } from '@/context/CartContext';
 
 export const metadata: Metadata = {
   title: 'Flower Shop',
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${montserrat.className} antialiased`}>
         <ReactQueryProvider>
-          {children}
+          <CartProvider>
+           {children}
+          </CartProvider>
         </ReactQueryProvider>
       </body>
     </html>

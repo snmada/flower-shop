@@ -1,13 +1,14 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
   id: string;
   name: string;
   description: string;
-  price: number;
   imageUrl: string;
+  price: number;
   category: string;
   handleAddToCart: (id: string) => void;
 }
@@ -16,11 +17,23 @@ export default function ProductCard({
   id,
   name,
   description,
-  price,
   imageUrl,
+  price,
   category,
-  handleAddToCart
 }: ProductCardProps) {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    const product = {
+      id,
+      name,
+      imageUrl,
+      price,
+      quantity: 1,
+    };
+    addToCart(product);
+  };
+
   return (
     <div className='rounded-md shadow-lg bg-white'>
       <div className='w-full h-[300px]'>
@@ -40,7 +53,7 @@ export default function ProductCard({
         <p className='text-xl font-semibold text-black mt-2 mb-4'>${price}</p>
         <Button 
           className='bg-secondary text-black w-full'
-          onClick={() => handleAddToCart(id)}
+          onClick={handleAddToCart}
         >
           <ShoppingCart />
           Add to cart
