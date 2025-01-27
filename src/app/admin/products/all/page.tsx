@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { useSearch } from '@/hooks/useSearch';
 import { Button } from '@/components/ui/button';
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
-import { useQuery } from '@tanstack/react-query';
-import { getAllProducts } from '@/actions/products';
-import { getAllCategories } from '@/actions/categories';
 import { DataTable } from '@/components/ui/data-table';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { 
@@ -15,25 +15,20 @@ import {
   DropdownMenuLabel, 
   DropdownMenuSeparator 
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, TrashIcon } from 'lucide-react';
-import { useRouter, usePathname, useSearchParams} from 'next/navigation';
-import { Plus } from 'lucide-react';
+import { MoreHorizontal, TrashIcon, Plus } from 'lucide-react';
 import ProductDetailsDialog from '@/components/ProductDetailsDialog';
-import { deleteProductById } from '@/actions/products';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
 import SearchInput from '@/components/ui/search-input';
 import Combobox from '@/components/ui/combobox';
-import { useDebouncedCallback } from 'use-debounce';
+import { getAllProducts, deleteProductById } from '@/actions/products';
+import { getAllCategories } from '@/actions/categories';
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function AllProductsPage() {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-  const searchName = searchParams.get('name') || '';
-  const [selectedCategory, setSelectedCategory] = useState<string>('All categories');
   const router = useRouter();
+  const { searchName, handleSearch } = useSearch();
+  const [selectedCategory, setSelectedCategory] = useState<string>('All categories');
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
@@ -95,16 +90,6 @@ export default function AllProductsPage() {
     }
   };
 
-  const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (term) {
-      params.set('name', term);
-    } else {
-      params.delete('name');
-    }
-    replace(`${pathname}?${params.toString()}`);
-  }, 300);
-
   return (
     <div className='flex flex-col gap-5 pt-3'>
       <div className='flex justify-end'>
@@ -117,11 +102,10 @@ export default function AllProductsPage() {
         </Button>
       </div>
       <div className='p-5 my-5 rounded-md bg-white border border-gray-200'>
-        <SearchInput
-          value={searchParams.get('name')?.toString() || ''}
-          handleSearch={handleSearch}
-          placeholder='Search by product name . . .'
-        />
+          <SearchInput 
+            value={searchName}
+            handleSearch={handleSearch}
+          />
         <div className='flex flex-row gap-2 items-center justify-end'>
           <p>Choose category</p>
           <Combobox

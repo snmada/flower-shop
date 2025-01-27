@@ -5,13 +5,11 @@ import { Search, X } from 'lucide-react';
 interface SearchInputProps {
   value: string;
   handleSearch: (value: string) => void;
-  placeholder: string;
 }
 
 export default function SearchInput({
   value,
   handleSearch,
-  placeholder,
 }: SearchInputProps) {
   const [inputValue, setInputValue] = useState(value);
 
@@ -36,7 +34,7 @@ export default function SearchInput({
         type='text'
         value={inputValue}
         onChange={handleInputChange}
-        placeholder={placeholder}
+        placeholder='Search by product name . . .'
         className='pl-10 pr-10 py-5 bg-white border'
       />
       <Search 

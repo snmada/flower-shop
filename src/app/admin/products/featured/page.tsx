@@ -1,27 +1,23 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { useSearch } from '@/hooks/useSearch';
 import { Button } from '@/components/ui/button';
+import { DataTablePagination } from '@/components/ui/data-table-pagination';
+import SearchInput from '@/components/ui/search-input';
+import Combobox from '@/components/ui/combobox';
 import { Package, Star, X } from 'lucide-react';
 import { getAllProducts, updateFeaturedProducts } from '@/actions/products';
 import { getAllCategories } from '@/actions/categories';
 import { getFeaturedProducts } from '@/actions/products';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useDebouncedCallback } from 'use-debounce';
-import { DataTablePagination } from '@/components/ui/data-table-pagination';
-import SearchInput from '@/components/ui/search-input';
-import Combobox from '@/components/ui/combobox';
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function FeaturedProductsPage() {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const { searchName, handleSearch } = useSearch();
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
-  const searchName = searchParams.get('name') || '';
   const [selectedCategory, setSelectedCategory] = useState<string>('All categories');
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [editingProducts, setEditingProducts] = useState<string[]>([]);
@@ -91,16 +87,6 @@ export default function FeaturedProductsPage() {
     }
   };
 
-  const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (term) {
-      params.set('name', term);
-    } else {
-      params.delete('name');
-    }
-    replace(`${pathname}?${params.toString()}`);
-  }, 300);
-
   return (
     <div className='bg-[#FBFBFB] px-6 py-6 mt-10 rounded-lg'>
       <div className='mb-4 flex flex-row items-center justify-between'>
@@ -169,10 +155,9 @@ export default function FeaturedProductsPage() {
           </div>
       </div>
       <div className='p-5 my-5 rounded-md bg-white border border-gray-200'>
-        <SearchInput
-          value={searchParams.get('name')?.toString() || ''}
+        <SearchInput 
+          value={searchName}
           handleSearch={handleSearch}
-          placeholder='Search by product name . . .'
         />
         <div className='flex flex-row gap-2 items-center justify-end'>
           <p>Choose category</p>
