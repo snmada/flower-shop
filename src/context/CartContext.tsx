@@ -1,6 +1,7 @@
 'use client';
 
 import { useContext, createContext, useState, useEffect } from 'react';
+import { SHIPPING, TAX } from '@/constants/constants';
 
 interface Product {
   id: string;
@@ -16,6 +17,8 @@ interface CartContextType {
   addToCart: (product: Product) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  subtotal: number;
+  total: number; 
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -26,6 +29,8 @@ export const CartProvider = ({
   children: React.ReactNode; 
 }) => {
   const [cart, setCart] = useState<Product[]>([]);
+  const [subtotal, setSubtotal] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
     const storedCart = localStorage.getItem('cart');
@@ -40,6 +45,12 @@ export const CartProvider = ({
     } else {
       localStorage.removeItem('cart'); 
     }
+
+    const calculatedSubtotal = cart.reduce((total, product) => total + product.price * product.quantity, 0);
+    setSubtotal(Number(calculatedSubtotal.toFixed(2)));
+
+    const calculatedTotal = (subtotal + SHIPPING + TAX).toFixed(2);
+    setTotal(Number(calculatedTotal));
   }, [cart]);
 
   const addToCart = (product: Product) => {
@@ -77,7 +88,16 @@ export const CartProvider = ({
   const cartCount = cart.reduce((total, product) => total + product.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, cartCount, addToCart, removeFromCart, updateQuantity }}>
+    <CartContext.Provider 
+      value={{ 
+        cart, 
+        cartCount, 
+        addToCart, 
+        removeFromCart, 
+        updateQuantity, 
+        subtotal, 
+        total 
+      }}>
       {children}
     </CartContext.Provider>
   );
