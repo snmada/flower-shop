@@ -1,17 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useSearch } from '@/hooks/useSearch';
 import Filter from '@/components/ProductsPage/Filter';
 import ProductCard from '@/components/ProductsPage/ProductCard';
 import SearchInput from '@/components/ui/search-input';
 import Combobox from '@/components/ui/combobox';
-import { useQuery } from '@tanstack/react-query';
-import { getAllProducts } from '@/actions/products';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { CircleCheckBig, PackageOpen } from 'lucide-react';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useDebouncedCallback } from 'use-debounce';
+import { getAllProducts } from '@/actions/products';
 
 const DEFAULT_TAKE_SIZE = 9;
 
@@ -23,9 +22,7 @@ const sortCriterias = [
 ];
 
 export default function ProductsPage() {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+  const { searchName, handleSearch } = useSearch();
   const [selectedCategory, setSelectedCategory] = useState<string>('All categories');
   const [selectedFlowers, setSelectedFlowers] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
@@ -33,7 +30,6 @@ export default function ProductsPage() {
   const [skip, setSkip] = useState<number>(0);
   const [viewedProducts, setViewedProducts] = useState<any[]>([]); 
   const [totalProducts, setTotalProducts] = useState<number>(0); 
-  const searchName = searchParams.get('name') || '';
   const [selectedSortCriteria, setSelectedSortCriteria] = useState<string>('a-z');
 
   const handleAddToCart = (productId: string) => {
@@ -75,16 +71,6 @@ export default function ProductsPage() {
     setSkip((prev) => prev + DEFAULT_TAKE_SIZE);
   };
 
-  const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (term) {
-      params.set('name', term);
-    } else {
-      params.delete('name');
-    }
-    replace(`${pathname}?${params.toString()}`);
-  }, 300);
-
   const noResults = data && totalProducts === 0;
   const allProductsViewed = totalProducts > 0 && totalProducts === viewedProducts.length;
 
@@ -103,9 +89,8 @@ export default function ProductsPage() {
       <div className='flex-1'>
         <div className='p-5 mb-5 rounded-md bg-white border border-gray-200'>
           <SearchInput 
-            value={searchParams.get('name')?.toString() || ''}
+            value={searchName}
             handleSearch={handleSearch}
-            placeholder='Search by product name . . .'
           />
           <div className='flex flex-row gap-2 items-center justify-end'>
             <p>Sort by</p>
