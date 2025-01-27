@@ -1,27 +1,10 @@
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator'
+import { Separator } from '@/components/ui/separator';
+import { useCart } from '@/context/CartContext';
+import { SHIPPING, TAX } from '@/constants/constants';
 
-interface Product {
-  id: string;     
-  name: string;
-  imageUrl: string;
-  price: number;
-  quantity: number;      
-};
-  
-interface SummaryProps {
-  cart: Product[];
-  calculateTotal: () => number;
-}
-
-const SHIPPING = 10;
-const TAX = 15;
-
-export default function Summary({ 
-  cart, 
-  calculateTotal 
-}: SummaryProps) {
-  const total = calculateTotal() + SHIPPING + TAX;
+export default function Summary() {
+  const { cart, subtotal, total } = useCart();
 
   return (
     <div className='border p-6 rounded-lg min-h-[300px] bg-white'>
@@ -44,7 +27,7 @@ export default function Summary({
       <Separator />
       <div className='flex justify-between mb-2 pt-4'>
         <span className='text-lg'>Subtotal:</span>
-        <span className='font-medium text-xl'>${calculateTotal()}</span>
+        <span className='font-medium text-xl'>${subtotal}</span>
       </div>
       <div className='flex justify-between mb-2'>
         <span className='text-lg'>Shipping:</span>
