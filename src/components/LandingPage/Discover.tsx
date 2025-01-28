@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react'; 
-import ProductCard from '@/components/LandingPage/ProductCard';
+import ProductCard from '@/components/ProductCard';
 import { LinkButton } from '@/components/ui/link-button';
 import { getFeaturedProducts } from '@/actions/products';
 import { useQuery } from '@tanstack/react-query';
@@ -13,10 +13,6 @@ export default function Discover() {
   });
 
   const { featuredProducts = [] } = data || {};
-  
-  const handleAddToCart = (productId: string) => {
-    console.log('Add to cart', productId);
-  };
 
   return (
     <section 
@@ -32,7 +28,7 @@ export default function Discover() {
           <ProductCard 
             key={product.id} 
             {...product} 
-            handleAddToCart={handleAddToCart}
+            variant='standard'
           />
         ))}
       </div>
