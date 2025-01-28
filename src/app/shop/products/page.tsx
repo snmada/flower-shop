@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearch } from '@/hooks/useSearch';
 import Filter from '@/components/ProductsPage/Filter';
-import ProductCard from '@/components/ProductsPage/ProductCard';
+import ProductCard from '@/components/ProductCard';
 import SearchInput from '@/components/ui/search-input';
 import Combobox from '@/components/ui/combobox';
 import { Progress } from '@/components/ui/progress';
@@ -31,10 +31,6 @@ export default function ProductsPage() {
   const [viewedProducts, setViewedProducts] = useState<any[]>([]); 
   const [totalProducts, setTotalProducts] = useState<number>(0); 
   const [selectedSortCriteria, setSelectedSortCriteria] = useState<string>('a-z');
-
-  const handleAddToCart = (productId: string) => {
-    console.log('Add to cart', productId);
-  };
 
   const { data } = useQuery({
     queryKey: ['products', selectedCategory, selectedFlowers, minPrice, maxPrice, skip, searchName, selectedSortCriteria],
@@ -120,7 +116,7 @@ export default function ProductsPage() {
               <ProductCard
                 key={product.id}
                 {...product}
-                handleAddToCart={handleAddToCart}
+                variant='detailed'
               />
             ))}
           </div>
