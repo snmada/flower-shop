@@ -9,10 +9,6 @@ import { useCart } from '@/context/CartContext';
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity } = useCart();
 
-  const calculateTotal = () => {
-    return Number(cart.reduce((total, product) => total + product.price * product.quantity, 0).toFixed(2));
-  };
-
   return (
     <div>
       <h1 className='flex flex-row items-center text-[24px] my-8 gap-3'>
@@ -42,10 +38,7 @@ export default function CartPage() {
         </div>
         <div className='col-span-1 sm:col-span-2 lg:col-span-2'>
           {cart.length > 0 && 
-            <Summary 
-              cart={cart} 
-              calculateTotal={calculateTotal} 
-            />
+            <Summary />
           }
         </div>
       </div>
