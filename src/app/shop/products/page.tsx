@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearch } from '@/hooks/useSearch';
-import Filter from '@/components/ProductsPage/Filter';
+import Filter from '@/components/ProductsPage/Filter/index';
 import ProductGrid from '@/components/ProductsPage/ProductGrid';
 import SearchInput from '@/components/ui/search-input';
 import Combobox from '@/components/ui/combobox';
