@@ -49,7 +49,7 @@ export const CartProvider = ({
     const calculatedSubtotal = cart.reduce((total, product) => total + product.price * product.quantity, 0);
     setSubtotal(Number(calculatedSubtotal.toFixed(2)));
 
-    const calculatedTotal = (subtotal + SHIPPING + TAX).toFixed(2);
+    const calculatedTotal = (calculatedSubtotal + SHIPPING + TAX).toFixed(2);
     setTotal(Number(calculatedTotal));
   }, [cart]);
 
