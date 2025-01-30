@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 interface Product {
   id: string;
@@ -12,22 +13,20 @@ interface Product {
 
 interface CartItemProps {
   product: Product;
-  handleRemoveFromCart: (id: string) => void;
-  handleUpdateQuantity: (id: string, newQuantity: number) => void;
 }
 
 export default function CartItem({ 
-  product, 
-  handleRemoveFromCart, 
-  handleUpdateQuantity 
+  product
 }: CartItemProps) {
+  const { removeFromCart, updateQuantity } = useCart();
+
   return (
     <div
       key={product.id}
       className='flex items-center p-6 border rounded-lg bg-white'
     >
       <Button
-        onClick={() => handleRemoveFromCart(product.id)}
+        onClick={() => removeFromCart(product.id)}
         className='rounded-full text-primary h-8 w-8 mr-5'
         variant='ghost'
       >
@@ -50,7 +49,7 @@ export default function CartItem({
           <div className='flex items-center gap-4'>
             <Button
               variant='outline'
-              onClick={() => handleUpdateQuantity(product.id, product.quantity - 1)}
+              onClick={() => updateQuantity(product.id, product.quantity - 1)}
               disabled={product.quantity <= 1}
               className='h-8 w-8'
             >
@@ -59,7 +58,7 @@ export default function CartItem({
             <span className='text-lg font-medium'>{product.quantity}</span>
             <Button
               variant='outline'
-              onClick={() => handleUpdateQuantity(product.id, product.quantity + 1)}
+              onClick={() => updateQuantity(product.id, product.quantity + 1)}
               className='h-8 w-8'
             >
               <Plus size={16}/>
