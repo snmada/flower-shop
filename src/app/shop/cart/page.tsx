@@ -7,7 +7,7 @@ import Summary from '@/components/CartPage/Summary';
 import { useCart } from '@/context/CartContext';
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity } = useCart();
+  const { cart } = useCart();
 
   return (
     <div>
@@ -30,8 +30,6 @@ export default function CartPage() {
               <CartItem
                 key={product.id}
                 product={product}
-                handleRemoveFromCart={removeFromCart}
-                handleUpdateQuantity={updateQuantity}
               />
             ))
           )}
