@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { Trash2, ImagePlus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Combobox from '@/components/ui/combobox';
+import ActionableItem from './ActionableItem';
 
 const URL_DEFAULT_IMAGE = '/default.jpg';
 
@@ -240,18 +241,12 @@ export default function ProductForm({
                 <div className='mt-4 flex flex-wrap gap-2 items-center'>
                   <p>Selected flowers: </p>
                   {field.value?.map((flower: any) => (
-                    <div
-                      key={flower.id}
-                      className='flex items-center gap-1 border border-gray-300 px-3 rounded-full'
-                    >
-                      {flower.name}
-                      <Button
-                        variant='ghost'
-                        onClick={() => handleRemoveFlower(flower.id)}
-                        className='text-red-500 rounded-full h-8 w-8 '
-                      >
-                        <X />
-                      </Button>
+                    <div key={flower.id}>
+                      <ActionableItem
+                        name={flower.name}
+                        isActionable={true}
+                        onAction={() => handleRemoveFlower(flower.id)}
+                      />
                     </div>
                   ))}
                 </div>
