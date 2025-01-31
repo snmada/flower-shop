@@ -11,6 +11,7 @@ import { Package, Star, X } from 'lucide-react';
 import { getAllProducts, updateFeaturedProducts } from '@/actions/products';
 import { getAllCategories } from '@/actions/categories';
 import { getFeaturedProducts } from '@/actions/products';
+import ActionableItem from '@/components/ActionableItem';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -106,20 +107,12 @@ export default function FeaturedProductsPage() {
                 const product = products.find((p) => p.id === productId) || featuredProducts.find((p) => p.id === productId);
                 return (
                   product && (
-                    <div
-                      key={product.id}
-                      className='flex items-center gap-1 border border-gray-300 px-3 rounded-full py-1'
-                    >
-                      <span>{product.name}</span>
-                      {isEditing && (
-                        <Button
-                          variant='ghost'
-                          onClick={() => handleSelectProduct(product.id)}
-                          className='text-red-500 rounded-full h-8 w-8'
-                        >
-                          <X />
-                        </Button>
-                      )}
+                    <div key={product.id}>
+                      <ActionableItem
+                        name={product.name}
+                        isActionable={isEditing}
+                        onAction={() => handleSelectProduct(product.id)}
+                      />
                     </div>
                   )
                 );
