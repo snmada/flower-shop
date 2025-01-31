@@ -1,13 +1,15 @@
 'use client';
 
-import { 
-    Dialog, 
-    DialogContent, 
-    DialogFooter, 
-    DialogHeader, 
-    DialogTitle 
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -23,33 +25,28 @@ export default function ConfirmDialog({
   isOpen,
   onClose,
   onConfirm,
-  title,
-  description,
-  confirmButtonText,
-  cancelButtonText = 'Cancel',
+  title = 'Are you absolutely sure?',
+  description = 'This action cannot be undone.',
+  confirmButtonText= 'Continue',
+  cancelButtonText = 'Cancel'
 }: ConfirmDialogProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
-        <p>{description}</p>
-        <DialogFooter>
-          <Button 
-            className='bg-white border border-gray-300' 
-            onClick={onClose}
-          >
-            {cancelButtonText}
-          </Button>
-          <Button 
-            className='bg-red-600 text-white'
-            onClick={onConfirm}
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={onClose}>{cancelButtonText}</AlertDialogCancel>
+          <AlertDialogAction 
+            onClick={onConfirm} 
+            className='bg-black text-white'
           >
             {confirmButtonText}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
