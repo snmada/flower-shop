@@ -5,23 +5,16 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useSearch } from '@/hooks/useSearch';
 import { Button } from '@/components/ui/button';
-import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator 
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, TrashIcon, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import ProductDetailsDialog from '@/components/ProductDetailsDialog';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
 import SearchInput from '@/components/ui/search-input';
 import Combobox from '@/components/ui/combobox';
 import { getAllProducts, deleteProductById } from '@/actions/products';
 import { getAllCategories } from '@/actions/categories';
+import ProductActions from '@/components/ProductActions';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -159,38 +152,11 @@ export default function AllProductsPage() {
             cell: ({ row }) => {
               const productId = row.original.id;
               return (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant='ghost' className='h-8 w-8 p-0'>
-                      <span className='sr-only'>Open menu</span>
-                      <MoreHorizontal />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align='end'>
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                      className='cursor-pointer'
-                      onClick={() => handleViewDetails(productId)}
-                    >
-                      View item details
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      className='cursor-pointer'
-                      onClick={() => router.push(`/admin/products/update/${productId}`)}
-                    >
-                      Update item
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                      className='flex items-center text-red-600 cursor-pointer'
-                      onClick={() => confirmDelete(productId)}
-                    >
-                      <TrashIcon className='w-4 h-4' />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <ProductActions
+                  onViewDetails={() => handleViewDetails(productId)}
+                  onUpdate={() => router.push(`/admin/products/update/${productId}`)}
+                  onDelete={() => confirmDelete(productId)}
+                />
               )
             },
           }
