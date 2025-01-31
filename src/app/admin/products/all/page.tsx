@@ -183,8 +183,7 @@ export default function AllProductsPage() {
         isOpen={isConfirmDialogOpen}
         onClose={closeConfirmDialog}
         onConfirm={() => handleDeleteProduct(selectedProductId as string)}
-        title='Delete Product'
-        description='Are you sure you want to delete this product? This action cannot be undone.'
+        description='This action cannot be undone. This will permanently delete selected product.'
         confirmButtonText='Delete'
       />
     </div>
