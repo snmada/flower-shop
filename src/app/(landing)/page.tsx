@@ -1,5 +1,5 @@
-import Hero from '@/components/LandingPage/Hero';
-import Discover from '@/components/LandingPage/Discover';
+import Hero from '@/components/landing/Hero';
+import Discover from '@/components/landing/Discover';
 
 export default function LandingPage() {
   return (

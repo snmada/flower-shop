@@ -3,15 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSearch } from '@/hooks/useSearch';
-import { Button } from '@/components/ui/button';
-import { DataTablePagination } from '@/components/ui/data-table-pagination';
-import SearchInput from '@/components/ui/search-input';
-import Combobox from '@/components/ui/combobox';
+import { Button } from '@/components/ui/shadcn/button';
+import { DataTablePagination } from '@/components/ui/custom/data-table-pagination';
+import SearchInput from '@/components/ui/custom/search-input';
+import Combobox from '@/components/ui/shadcn/combobox';
 import { Package, Star, X } from 'lucide-react';
 import { getAllProducts, updateFeaturedProducts } from '@/actions/products';
 import { getAllCategories } from '@/actions/categories';
 import { getFeaturedProducts } from '@/actions/products';
-import ActionableItem from '@/components/ActionableItem';
+import ActionableItem from '@/components/ui/custom/actionable-item';
 
 const DEFAULT_PAGE_SIZE = 10;
 

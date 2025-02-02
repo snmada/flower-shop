@@ -4,17 +4,17 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useSearch } from '@/hooks/useSearch';
-import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
-import { DataTablePagination } from '@/components/ui/data-table-pagination';
+import { Button } from '@/components/ui/shadcn/button';
+import { DataTable } from '@/components/ui/shadcn/data-table';
+import { DataTablePagination } from '@/components/ui/custom/data-table-pagination';
 import { Plus } from 'lucide-react';
-import ProductDetailsDialog from '@/components/ProductDetailsDialog';
-import ConfirmDialog from '@/components/ui/confirm-dialog';
-import SearchInput from '@/components/ui/search-input';
-import Combobox from '@/components/ui/combobox';
+import ProductDetailsDialog from '@/components/product/ProductDetailsDialog';
+import ConfirmDialog from '@/components/ui/custom/confirm-dialog';
+import SearchInput from '@/components/ui/custom/search-input';
+import Combobox from '@/components/ui/shadcn/combobox';
 import { getAllProducts, deleteProductById } from '@/actions/products';
 import { getAllCategories } from '@/actions/categories';
-import ProductActions from '@/components/ProductActions';
+import ProductActions from '@/components/product/ProductActions';
 
 const DEFAULT_PAGE_SIZE = 10;
 
