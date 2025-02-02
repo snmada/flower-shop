@@ -5,7 +5,7 @@ import { getAllCategories } from '@/actions/categories';
 import { getAllFlowers } from '@/actions/flowers';
 import { useQuery } from '@tanstack/react-query';
 import { createProduct } from '@/actions/products';
-import ProductForm from '@/components/ProductForm';
+import ProductForm from '@/components/product/ProductForm';
 
 interface ProductFormData {
   name: string;

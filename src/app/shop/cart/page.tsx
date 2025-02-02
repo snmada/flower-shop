@@ -1,9 +1,9 @@
 'use client';
 
-import { LinkButton } from '@/components/ui/link-button';
+import { LinkButton } from '@/components/ui/custom/link-button';
 import { ChevronRight } from 'lucide-react';
-import CartItem from '@/components/CartPage/CartItem';
-import Summary from '@/components/CartPage/Summary';
+import CartItem from '@/components/cart/CartItem';
+import Summary from '@/components/cart/Summary';
 import { useCart } from '@/context/CartContext';
 
 export default function CartPage() {

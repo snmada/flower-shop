@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearch } from '@/hooks/useSearch';
-import Filter from '@/components/ProductsPage/Filter/index';
-import ProductGrid from '@/components/ProductsPage/ProductGrid';
-import SearchInput from '@/components/ui/search-input';
-import Combobox from '@/components/ui/combobox';
+import Filter from '@/components/product/Filter/index';
+import ProductGrid from '@/components/product/ProductGrid';
+import SearchInput from '@/components/ui/custom/search-input';
+import Combobox from '@/components/ui/shadcn/combobox';
 import { getAllProducts } from '@/actions/products';
 import { DEFAULT_TAKE_SIZE, SORT_CRITERIAS } from '@/constants/constants';
 
