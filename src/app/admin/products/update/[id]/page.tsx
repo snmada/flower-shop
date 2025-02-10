@@ -21,17 +21,17 @@ export default function UpdateProductPage() {
   const router = useRouter();
   const id = useParams().id;
 
-  const { data: categories } = useQuery({
+  const { data: categories, isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
 
-  const { data: flowers } = useQuery({
+  const { data: flowers, isLoading: flowersLoading } = useQuery({
     queryKey: ['flowers'],
     queryFn: () => getAllFlowers(),
   });
 
-  const { data: product } = useQuery({
+  const { data: product, isLoading: productLoading } = useQuery({
     queryKey: ['product', id],
     queryFn: () => getProductById(id as string),
   });
@@ -55,6 +55,8 @@ export default function UpdateProductPage() {
     router.push('/admin/products/all');
   }
 
+  const isLoading = categoriesLoading && flowersLoading && productLoading;
+
   return (
     <div className='bg-[#FBFBFB] px-6 py-6 mt-10 rounded-lg'>
       <ProductForm
@@ -71,6 +73,7 @@ export default function UpdateProductPage() {
         onSubmit={onSubmit}
         categories={categories || []}
         flowers={flowers || []}
+        isLoading={isLoading}
       />
     </div>
   );
