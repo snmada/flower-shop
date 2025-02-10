@@ -21,7 +21,7 @@ export default function CartPage() {
       >
         CONTINUE SHOPPING
       </LinkButton>
-        {!isLoading ? (
+        {isLoading ? (
           <div className='flex flex-col justify-center items-center h-96'>
             <div className='border-t-4 border-primary border-solid rounded-full w-12 h-12 animate-spin'></div>
             <p className='mt-10'>Loading your cart . . . Almost ready!</p>
