@@ -17,6 +17,7 @@ import { Trash2, ImagePlus, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Combobox from '@/components/ui/shadcn/combobox';
 import ActionableItem from '@/components/ui/custom/actionable-item';
+import { Skeleton } from '@/components/ui/shadcn/skeleton';
 
 const URL_DEFAULT_IMAGE = '/default.jpg';
 
@@ -69,6 +70,7 @@ interface ProductFormProps {
   onSubmit: (values: FormData) => void;
   categories: { id: string, name: string }[];
   flowers: { id: string, name: string }[];
+  isLoading: boolean;
 }
 
 export default function ProductForm({ 
@@ -76,7 +78,8 @@ export default function ProductForm({
   onSubmit, 
   onCancel,
   categories, 
-  flowers 
+  flowers,
+  isLoading
 }: ProductFormProps){
   const [imagePreview, setImagePreview] = useState<string | null>(initialData?.imageUrl || null);
   const [inputKey, setInputKey] = useState(0);
@@ -118,10 +121,14 @@ export default function ProductForm({
               <FormItem>
                 <FormLabel>Product name</FormLabel>
                 <FormControl>
-                  <Input 
-                    placeholder='Enter product name'
-                    {...field} 
-                  />
+                  {isLoading ? (
+                    <Skeleton className='bg-gray-300 h-8 w-full' />
+                  ) : (
+                    <Input 
+                      placeholder='Enter product name'
+                      {...field} 
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -134,11 +141,15 @@ export default function ProductForm({
               <FormItem>
                 <FormLabel>Price</FormLabel>
                 <FormControl>
-                  <Input 
-                    type='number' 
-                    {...field}
-                    onChange={(e) => field.onChange(parseFloat(e.target.value) || '')} 
-                  />
+                  {isLoading ? (
+                    <Skeleton className='bg-gray-300 h-8 w-full' />
+                  ) : (
+                    <Input 
+                      type='number' 
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || '')} 
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -151,11 +162,15 @@ export default function ProductForm({
               <FormItem>
                 <FormLabel>Stock</FormLabel>
                 <FormControl>
-                  <Input 
-                    type='number' 
-                    {...field} 
-                    onChange={(e) => field.onChange(parseFloat(e.target.value) || '')}
-                  />
+                  {isLoading ? (
+                    <Skeleton className='bg-gray-300 h-8 w-full' />
+                  ) : (
+                    <Input 
+                      type='number' 
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || '')} 
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -169,10 +184,14 @@ export default function ProductForm({
             <FormItem>
               <FormLabel>Product description</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder='Enter product description'
-                  {...field} 
-                />
+                {isLoading ? (
+                  <Skeleton className='bg-gray-300 h-8 w-full' />
+                ) : (
+                  <Input 
+                    placeholder='Enter product description'
+                    {...field} 
+                  />
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -185,20 +204,24 @@ export default function ProductForm({
             <FormItem className='flex flex-col gap-1 mt-2'>
               <FormLabel>Choose category</FormLabel>
               <FormControl>
-                <Combobox
-                  options={
-                    categories
-                      ? categories.map((category) => ({
-                          label: category.name,
-                          value: category.id,
-                        }))
-                      : []
-                  }
-                  value={field.value}
-                  onChange={(value: any) => field.onChange(value)}
-                  placeholder='See options'  
-                  searchable={true} 
-                />
+                {isLoading ? (
+                  <Skeleton className='bg-gray-300 h-8 w-[200px]' />
+                ) : (
+                  <Combobox
+                    options={
+                      categories
+                        ? categories.map((category) => ({
+                            label: category.name,
+                            value: category.id,
+                          }))
+                        : []
+                    }
+                    value={field.value}
+                    onChange={(value: any) => field.onChange(value)}
+                    placeholder='See options'  
+                    searchable={true} 
+                  />
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -223,32 +246,43 @@ export default function ProductForm({
               <FormItem className='flex flex-col gap-1 mt-2'>
                 <FormLabel>Choose flowers</FormLabel>
                 <FormControl>
-                  <Combobox
-                    options={
-                      flowers
-                        ? flowers.map((flower) => ({
-                            label: flower.name,
-                            value: flower.id,
-                          }))
-                        : []
-                    }
-                    placeholder='See options'
-                    onChange={handleAddFlower}
-                    searchable={true}
-                  />
+                  {isLoading ? (
+                    <Skeleton className='bg-gray-300 h-8 w-[200px]' />
+                  ) : (
+                    <Combobox
+                      options={
+                        flowers
+                          ? flowers.map((flower) => ({
+                              label: flower.name,
+                              value: flower.id,
+                            }))
+                          : []
+                      }
+                      placeholder='See options'
+                      onChange={handleAddFlower}
+                      searchable={true}
+                    />
+                  )}
                 </FormControl>
                 {(field.value?.length ?? 0) > 0 && (
                 <div className='mt-4 flex flex-wrap gap-2 items-center'>
                   <p>Selected flowers: </p>
-                  {field.value?.map((flower: any) => (
-                    <div key={flower.id}>
-                      <ActionableItem
-                        name={flower.name}
-                        isActionable={true}
-                        onAction={() => handleRemoveFlower(flower.id)}
-                      />
-                    </div>
-                  ))}
+                  {isLoading? (
+                    Array.from({ length: 3 }).map((_, index) => 
+                      <Skeleton key={index} className='bg-gray-300 h-7 w-20 rounded-full'/>)
+                  ) : (
+                    <>
+                    {field.value?.map((flower: any) => (
+                      <div key={flower.id}>
+                        <ActionableItem
+                          name={flower.name}
+                          isActionable={true}
+                          onAction={() => handleRemoveFlower(flower.id)}
+                        />
+                      </div>
+                    ))}
+                    </>
+                  )}
                 </div>
                 )}
                 <FormMessage />
@@ -265,56 +299,62 @@ export default function ProductForm({
               <FormControl>
                 <div>
                   <div className='flex flex-col gap-3 items-center justify-center bg-white p-6 border border-gray-200 border-dashed border-4'>
-                    <label
-                      htmlFor='file-input'
-                      className='flex flex-col gap-3 items-center cursor-pointer'
-                    >
-                      {!imagePreview && !defaultImage && (
-                        <>
-                        <ImagePlus 
-                          size={40} 
-                          strokeWidth={0.75} 
-                        />
-                        Choose an image
-                        </>
-                      )}
-                    </label>
-                    {!defaultImage && (
-                      <Input
-                        key={inputKey}
-                        id='file-input'
-                        type='file'
-                        accept='image/*'
-                        className='hidden'
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setImagePreview(URL.createObjectURL(file));
-                            field.onChange(file.name);
-                          }
-                        }}
-                      />
-                    )}
-                    {imagePreview && (
+                    {isLoading? (
+                      <Skeleton className='bg-gray-300 w-40 h-40'/>
+                    ) : (
                       <>
-                      <Image
-                        src={imagePreview}
-                        alt='Image preview'
-                        width={40}
-                        height={40}
-                        className='w-40 h-40 object-cover rounded-md mb-2'
-                      />
+                      <label
+                        htmlFor='file-input'
+                        className='flex flex-col gap-3 items-center cursor-pointer'
+                      >
+                        {!imagePreview && !defaultImage && (
+                          <>
+                          <ImagePlus 
+                            size={40} 
+                            strokeWidth={0.75} 
+                          />
+                          Choose an image
+                          </>
+                        )}
+                      </label>
                       {!defaultImage && (
-                        <Button
-                          onClick={() => {
-                            setImagePreview(null);
-                            setInputKey((prevKey) => prevKey + 1);
-                            form.setValue('imageUrl', '');
+                        <Input
+                          key={inputKey}
+                          id='file-input'
+                          type='file'
+                          accept='image/*'
+                          className='hidden'
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setImagePreview(URL.createObjectURL(file));
+                              field.onChange(file.name);
+                            }
                           }}
-                          className='bg-white text-red-500 border border-red-500 rounded-full p-2'
-                        >
-                          <Trash2 size={18} />
-                        </Button>
+                        />
+                      )}
+                      {imagePreview && (
+                        <>
+                        <Image
+                          src={imagePreview}
+                          alt='Image preview'
+                          width={40}
+                          height={40}
+                          className='w-40 h-40 object-cover rounded-md mb-2'
+                        />
+                        {!defaultImage && (
+                          <Button
+                            onClick={() => {
+                              setImagePreview(null);
+                              setInputKey((prevKey) => prevKey + 1);
+                              form.setValue('imageUrl', '');
+                            }}
+                            className='bg-white text-red-500 border border-red-500 rounded-full p-2'
+                          >
+                            <Trash2 size={18} />
+                          </Button>
+                        )}
+                        </>
                       )}
                       </>
                     )}
