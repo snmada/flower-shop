@@ -7,7 +7,7 @@ import Summary from '@/components/cart/Summary';
 import { useCart } from '@/context/CartContext';
 
 export default function CartPage() {
-  const { cart } = useCart();
+  const { cart, isLoading } = useCart();
 
   return (
     <div>
@@ -21,25 +21,29 @@ export default function CartPage() {
       >
         CONTINUE SHOPPING
       </LinkButton>
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mt-5'>
-        <div className='flex flex-col col-span-1 sm:col-span-2 lg:col-span-3 gap-6'>
-          {cart.length === 0 ? (
-            <p>Your cart is empty</p>
-          ) : (
-            cart.map((product) => (
-              <CartItem
-                key={product.id}
-                product={product}
-              />
-            ))
-          )}
-        </div>
-        <div className='col-span-1 sm:col-span-2 lg:col-span-2'>
-          {cart.length > 0 && 
-            <Summary />
-          }
-        </div>
-      </div>
+        {!isLoading ? (
+          <div className='flex flex-col justify-center items-center h-96'>
+            <div className='border-t-4 border-primary border-solid rounded-full w-12 h-12 animate-spin'></div>
+            <p className='mt-10'>Loading your cart . . . Almost ready!</p>
+          </div>
+        ) : (
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mt-5'>
+            <div className='flex flex-col col-span-1 sm:col-span-2 lg:col-span-3 gap-6'>
+              {cart.length === 0 ? (
+                <p>Your cart is empty</p>
+              ) : (
+                cart.map((product) => (
+                  <CartItem key={product.id} product={product} />
+                ))
+              )}
+            </div>
+            <div className='col-span-1 sm:col-span-2 lg:col-span-2'>
+              {cart.length > 0 && 
+                <Summary />
+              }
+            </div>
+          </div>
+        )}
     </div>
   );
 }
