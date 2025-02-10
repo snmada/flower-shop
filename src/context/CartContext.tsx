@@ -19,6 +19,7 @@ interface CartContextType {
   updateQuantity: (id: string, quantity: number) => void;
   subtotal: number;
   total: number; 
+  isLoading: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -31,12 +32,14 @@ export const CartProvider = ({
   const [cart, setCart] = useState<Product[]>([]);
   const [subtotal, setSubtotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true); 
 
   useEffect(() => {
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
       setCart(JSON.parse(storedCart));
     }
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -96,7 +99,8 @@ export const CartProvider = ({
         removeFromCart, 
         updateQuantity, 
         subtotal, 
-        total 
+        total,
+        isLoading
       }}>
       {children}
     </CartContext.Provider>
