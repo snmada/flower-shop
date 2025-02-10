@@ -12,6 +12,7 @@ import { getAllProducts, updateFeaturedProducts } from '@/actions/products';
 import { getAllCategories } from '@/actions/categories';
 import { getFeaturedProducts } from '@/actions/products';
 import ActionableItem from '@/components/ui/custom/actionable-item';
+import { Skeleton } from '@/components/ui/shadcn/skeleton';
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -24,7 +25,7 @@ export default function FeaturedProductsPage() {
   const [editingProducts, setEditingProducts] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data } = useQuery({
+  const { data, isLoading: isLoadingProducts } = useQuery({
     queryKey: ['products', currentPage, pageSize, searchName, selectedCategory],
     queryFn: () =>
       getAllProducts({
@@ -40,7 +41,7 @@ export default function FeaturedProductsPage() {
     queryFn: () => getAllCategories(),
   });
 
-  const { data: featuredProductsData } = useQuery({
+  const { data: featuredProductsData, isLoading: isLoadingFeaturedProducts } = useQuery({
     queryKey: ['featuredProducts'],
     queryFn: getFeaturedProducts,
   });
@@ -97,27 +98,38 @@ export default function FeaturedProductsPage() {
             ) : (
               <div className='flex flex-row items-center'>
                 <div className='h-3 w-3 bg-[#88D66C] rounded-full mr-3'></div>
-                <p className='font-semibold pr-2'>Featured Products: {' '}
-                  {featuredProducts.length === 0 && <span className='text-gray-400'>No featured products selected</span>}
-                </p>
+                <p className='font-semibold pr-2'>Featured Products: {' '}</p>
+                <div className='flex flex-wrap gap-4'>
+                  {isLoadingFeaturedProducts? (
+                    Array.from({ length: 3 }).map((_, index) => 
+                      <Skeleton key={index} className='bg-gray-300 h-7 w-20 rounded-full'/>)
+                  ) : (
+                    <>
+                    {featuredProducts.length === 0? (
+                      <span className='text-gray-400'>No featured products selected</span>
+                    ) : (
+                      <>
+                        {(isEditing ? editingProducts : selectedProducts).map((productId) => {
+                          const product = products.find((p) => p.id === productId) || featuredProducts.find((p) => p.id === productId);
+                          return (
+                            product && (
+                              <div key={product.id}>
+                                <ActionableItem
+                                  name={product.name}
+                                  isActionable={isEditing}
+                                  onAction={() => handleSelectProduct(product.id)}
+                                />
+                              </div>
+                            )
+                          );
+                        })}
+                      </>
+                    )}
+                    </>
+                  )}
+                </div>
               </div>
             )}
-            <div className='flex gap-4 flex-wrap'>
-              {(isEditing ? editingProducts : selectedProducts).map((productId) => {
-                const product = products.find((p) => p.id === productId) || featuredProducts.find((p) => p.id === productId);
-                return (
-                  product && (
-                    <div key={product.id}>
-                      <ActionableItem
-                        name={product.name}
-                        isActionable={isEditing}
-                        onAction={() => handleSelectProduct(product.id)}
-                      />
-                    </div>
-                  )
-                );
-              })}
-            </div>
           </div>
           <div>
             {!isEditing ? (
@@ -189,29 +201,36 @@ export default function FeaturedProductsPage() {
           Choose exactly 3 products to mark as featured. You can unselect a product if needed.
         </p>
       )}
-      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-5'>
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className={`p-4 border rounded-lg shadow-md ${isEditing && 'cursor-pointer'} ${
-              (isEditing ? editingProducts : selectedProducts).includes(product.id)
-                ? 'bg-black text-white '
-                : 'bg-white'
-            }`}
-            onClick={() => handleSelectProduct(product.id)}
-          >
-            <div className='flex items-center justify-between'>
-              <Package className='text-xl' />
-              {(isEditing ? editingProducts : selectedProducts).includes(product.id) && (
-                <span className='text-[18px] text-black'>
-                  <Star fill='yellow' size={32} />
-                </span>
-              )}
+      {isLoadingProducts? (
+        <div className='flex flex-col justify-center items-center h-96'>
+          <div className='border-t-4 border-primary border-solid rounded-full w-12 h-12 animate-spin'></div>
+          <p className='mt-10'>Loading featured products . . . Almost ready!</p>
+        </div>
+      ) : (
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-5'>
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className={`p-4 border rounded-lg shadow-md ${isEditing && 'cursor-pointer'} ${
+                (isEditing ? editingProducts : selectedProducts).includes(product.id)
+                  ? 'bg-black text-white'
+                  : 'bg-white'
+              }`}
+              onClick={() => handleSelectProduct(product.id)}
+            >
+              <div className='flex items-center justify-between'>
+                <Package className='text-xl' />
+                {(isEditing ? editingProducts : selectedProducts).includes(product.id) && (
+                  <span className='text-[18px] text-black'>
+                    <Star fill='yellow' size={32} />
+                  </span>
+                )}
+              </div>
+              <h3 className='mt-2 text-lg font-semibold'>{product.name}</h3>
             </div>
-            <h3 className='mt-2 text-lg font-semibold'>{product.name}</h3>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       <div className='mt-10'>
         <DataTablePagination
           pageSize={pageSize}
