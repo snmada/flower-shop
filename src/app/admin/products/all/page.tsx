@@ -28,7 +28,7 @@ export default function AllProductsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
-  const { data, refetch } = useQuery({
+  const { data, refetch, isLoading } = useQuery({
     queryKey: ['products', currentPage, pageSize, searchName, selectedCategory],
     queryFn: () =>
       getAllProducts({
@@ -131,49 +131,58 @@ export default function AllProductsPage() {
           )}
         </div>
       </div>
-      <DataTable
-        data={products}
-        columns={[
-          {
-            accessorKey: 'name',
-            header: 'Name'
-          },
-          {
-            accessorKey: 'price',
-            header: 'Price',
-          },
-          {
-            accessorKey: 'stock',
-            header: 'Stock',
-          },
-          {
-            id: 'actions',
-            enableHiding: false,
-            cell: ({ row }) => {
-              const productId = row.original.id;
-              return (
-                <ProductActions
-                  onViewDetails={() => handleViewDetails(productId)}
-                  onUpdate={() => router.push(`/admin/products/update/${productId}`)}
-                  onDelete={() => confirmDelete(productId)}
-                />
-              )
-            },
-          }
-        ]}
-      />
-      {totalProducts > 0 && (
-        <div className='flex mt-4 text-sm text-gray-600 justify-end'>
-          Showing {startIndex} to {endIndex} of {totalProducts} products
+      {isLoading? (
+        <div className='flex flex-col justify-center items-center h-96'>
+          <div className='border-t-4 border-primary border-solid rounded-full w-12 h-12 animate-spin'></div>
+          <p className='mt-10'>Loading products . . . Almost ready!</p>
         </div>
+      ) : (
+        <>
+        <DataTable
+          data={products}
+          columns={[
+            {
+              accessorKey: 'name',
+              header: 'Name'
+            },
+            {
+              accessorKey: 'price',
+              header: 'Price',
+            },
+            {
+              accessorKey: 'stock',
+              header: 'Stock',
+            },
+            {
+              id: 'actions',
+              enableHiding: false,
+              cell: ({ row }) => {
+                const productId = row.original.id;
+                return (
+                  <ProductActions
+                    onViewDetails={() => handleViewDetails(productId)}
+                    onUpdate={() => router.push(`/admin/products/update/${productId}`)}
+                    onDelete={() => confirmDelete(productId)}
+                  />
+                )
+              },
+            }
+          ]}
+        />
+        {totalProducts > 0 && (
+          <div className='flex mt-4 text-sm text-gray-600 justify-end'>
+            Showing {startIndex} to {endIndex} of {totalProducts} products
+          </div>
+        )}
+        <DataTablePagination
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalItems={totalProducts}
+        />
+        </>
       )}
-      <DataTablePagination
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        totalItems={totalProducts}
-      />
       <ProductDetailsDialog
         productId={selectedProductId}
         isOpen={isDialogOpen}
