@@ -10,6 +10,7 @@ import Flowers from './FilterSections/Flowers';
 import PriceRange from './FilterSections/PriceRange';
 import { getAllCategories } from '@/actions/categories';
 import { getAllFlowers } from '@/actions/flowers';
+import { Skeleton } from '@/components/ui/shadcn/skeleton';
 
 interface FilterAccordionProps {
   selectedCategory: string;
@@ -32,12 +33,12 @@ export default function FilterAccordion({
   maxPrice,
   setMaxPrice
 }: FilterAccordionProps) {
-  const { data: categories } = useQuery({
+  const { data: categories, isLoading: isLoadingCategories } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
   
-  const { data: flowers } = useQuery({
+  const { data: flowers, isLoading: isLoadingFlowers } = useQuery({
     queryKey: ['flowers'],
     queryFn: () => getAllFlowers(),
   });
@@ -47,21 +48,31 @@ export default function FilterAccordion({
       <AccordionItem value='category'>
         <AccordionTrigger>Category</AccordionTrigger>
         <AccordionContent>
-          <Category
-            value={selectedCategory}
-            options={['All categories', ...categories?.map((category) => category.name) || []]}
-            onChange={setSelectedCategory}
-          />
+          {isLoadingCategories ? (
+            Array.from({ length: 3 }).map((_, index) => 
+              <Skeleton key={index} className='bg-gray-300 h-6 w-full mb-2' />)
+          ) : (
+            <Category
+              value={selectedCategory}
+              options={['All categories', ...categories?.map((category) => category.name) || []]}
+              onChange={setSelectedCategory}
+            />
+          )}
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value='flowers'>
         <AccordionTrigger>Flowers</AccordionTrigger>
         <AccordionContent>
-          <Flowers
-            options={flowers?.map((flower) => flower.name) || []}
-            selectedOptions={selectedFlowers}
-            onChange={setSelectedFlowers}
-          />
+          {isLoadingFlowers ? (
+            Array.from({ length: 3 }).map((_, index) => 
+              <Skeleton key={index} className='bg-gray-300 h-6 w-full mb-2' />)
+          ) : (
+            <Flowers
+              options={flowers?.map((flower) => flower.name) || []}
+              selectedOptions={selectedFlowers}
+              onChange={setSelectedFlowers}
+            />
+          )}
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value='price'>
