@@ -5,9 +5,10 @@ import ProductCard from '@/components/product/ProductCard';
 import { LinkButton } from '@/components/ui/custom/link-button';
 import { getFeaturedProducts } from '@/actions/products';
 import { useQuery } from '@tanstack/react-query';
+import ProductCardSkeleton from '@/components/product/ProductCardSkeleton';
 
 export default function Discover() {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['featuredProducts'],
     queryFn: getFeaturedProducts,
   });
@@ -24,13 +25,16 @@ export default function Discover() {
         'You Can't Miss' COLLECTION
       </h1>
       <div className='grid grid-cols-1 xl:grid-cols-3 gap-10'>
-        {featuredProducts.map((product) => (
-          <ProductCard 
-            key={product.id} 
-            {...product} 
-            variant='standard'
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => <ProductCardSkeleton key={index} variant='standard' />)
+          : featuredProducts.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                {...product} 
+                variant='standard'
+              />
+            ))
+        }
       </div>
       <div className='mt-8 text-center'>
         <LinkButton

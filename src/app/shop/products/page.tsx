@@ -19,7 +19,7 @@ export default function ProductsPage() {
   const [skip, setSkip] = useState<number>(0);
   const [selectedSortCriteria, setSelectedSortCriteria] = useState<string>('a-z');
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['products', selectedCategory, selectedFlowers, minPrice, maxPrice, skip, searchName, selectedSortCriteria],
     queryFn: () =>
       getAllProducts({
@@ -71,6 +71,7 @@ export default function ProductsPage() {
           selectedFlowers={selectedFlowers}
           minPrice={minPrice}
           maxPrice={maxPrice}
+          isLoading={isLoading}
         />
       </div>
     </div>

@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/shadcn/progress';
 import { Button } from '@/components/ui/shadcn/button';
 import { PackageOpen, CircleCheckBig } from 'lucide-react';
 import { DEFAULT_TAKE_SIZE } from '@/constants/constants';
+import ProductCardSkeleton from './ProductCardSkeleton';
 
 interface Product {
   id: string;
@@ -29,6 +30,7 @@ interface ProductGridProps {
   selectedFlowers: string[];
   minPrice: number;
   maxPrice: number;
+  isLoading: boolean;
 }
 
 export default function ProductGrid({
@@ -39,6 +41,7 @@ export default function ProductGrid({
   selectedFlowers,
   minPrice,
   maxPrice,
+  isLoading,
 }: ProductGridProps) {
   const [viewedProducts, setViewedProducts] = useState<Product[]>([]);
   const [totalProducts, setTotalProducts] = useState<number>(0);
@@ -75,12 +78,15 @@ export default function ProductGrid({
     ) : (
       <>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {viewedProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              {...product}
-            />
-          ))}
+          {isLoading
+            ? Array.from({ length: 3 }).map((_, index) => <ProductCardSkeleton key={index} />)
+            : viewedProducts.map((product) => (
+                <ProductCard 
+                  key={product.id} 
+                  {...product} 
+                />
+              ))
+          }
         </div>
         <div className='flex flex-col items-center gap-4 mt-20 mb-20'>
           {viewedProducts.length < totalProducts && (
