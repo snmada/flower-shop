@@ -1,7 +1,10 @@
 'use client';
 
 import { useContext, createContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { SHIPPING, TAX } from '@/constants/constants';
+import { useToast } from '@/hooks/use-toast';
+import { ToastAction } from '@/components/ui/shadcn/toast';
 
 interface Product {
   id: string;
@@ -29,6 +32,8 @@ export const CartProvider = ({
 }: { 
   children: React.ReactNode; 
 }) => {
+  const router = useRouter();
+  const { toast } = useToast();
   const [cart, setCart] = useState<Product[]>([]);
   const [subtotal, setSubtotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
@@ -67,6 +72,17 @@ export const CartProvider = ({
         );
       }
       return [...prevCart, product];
+    });
+    toast({
+      title: 'Product added to the cart',
+      description: 'The product has been successfully added to the cart.',
+      action: 
+        <ToastAction 
+          altText='View My Cart'
+          onClick={() => router.push('/shop/cart')}
+        >
+          View My Cart
+        </ToastAction>
     });
   };
 

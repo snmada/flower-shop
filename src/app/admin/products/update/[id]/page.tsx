@@ -6,6 +6,7 @@ import { getAllFlowers } from '@/actions/flowers';
 import { useQuery } from '@tanstack/react-query';
 import { getProductById, updateProduct } from '@/actions/products';
 import ProductForm from '@/components/product/ProductForm';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductFormData {
   name: string;
@@ -20,6 +21,7 @@ interface ProductFormData {
 export default function UpdateProductPage() {
   const router = useRouter();
   const id = useParams().id;
+  const { toast } = useToast();
 
   const { data: categories, isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories'],
@@ -53,6 +55,10 @@ export default function UpdateProductPage() {
     };
     await updateProduct(productData);
     router.push('/admin/products/all');
+    toast({
+      title: 'Changes Saved',
+      description: 'The product details have been successfully updated in the database.',
+    });
   }
 
   const isLoading = categoriesLoading && flowersLoading && productLoading;

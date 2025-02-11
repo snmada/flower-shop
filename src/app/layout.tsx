@@ -3,6 +3,7 @@ import { montserrat } from './fonts';
 import './globals.css';
 import ReactQueryProvider from '@/lib/Providers/ReactQueryProvider';
 import { CartProvider } from '@/context/CartContext';
+import { Toaster } from '@/components/ui/shadcn/toaster';
 
 export const metadata: Metadata = {
   title: 'Flower Shop',
@@ -20,6 +21,7 @@ export default function RootLayout({
         <ReactQueryProvider>
           <CartProvider>
            {children}
+           <Toaster />
           </CartProvider>
         </ReactQueryProvider>
       </body>

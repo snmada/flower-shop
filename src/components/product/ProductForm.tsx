@@ -70,7 +70,7 @@ interface ProductFormProps {
   onSubmit: (values: FormData) => void;
   categories: { id: string, name: string }[];
   flowers: { id: string, name: string }[];
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export default function ProductForm({ 
@@ -79,7 +79,7 @@ export default function ProductForm({
   onCancel,
   categories, 
   flowers,
-  isLoading
+  isLoading = false
 }: ProductFormProps){
   const [imagePreview, setImagePreview] = useState<string | null>(initialData?.imageUrl || null);
   const [inputKey, setInputKey] = useState(0);

@@ -15,11 +15,13 @@ import Combobox from '@/components/ui/shadcn/combobox';
 import { getAllProducts, deleteProductById } from '@/actions/products';
 import { getAllCategories } from '@/actions/categories';
 import ProductActions from '@/components/product/ProductActions';
+import { useToast } from '@/hooks/use-toast';
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function AllProductsPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const { searchName, handleSearch } = useSearch();
   const [selectedCategory, setSelectedCategory] = useState<string>('All categories');
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -75,6 +77,10 @@ export default function AllProductsPage() {
     if (!productId) return;
     try {
       await deleteProductById(productId);
+      toast({
+        title: 'Product Deleted',
+        description: 'The product has been successfully deleted from the database.',
+      });
       refetch(); 
     } catch (error) {
       console.error('Error deleting product:', error);

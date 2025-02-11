@@ -6,6 +6,7 @@ import { getAllFlowers } from '@/actions/flowers';
 import { useQuery } from '@tanstack/react-query';
 import { createProduct } from '@/actions/products';
 import ProductForm from '@/components/product/ProductForm';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductFormData {
   name: string;
@@ -19,6 +20,7 @@ interface ProductFormData {
 
 export default function CreateProductPage() {
   const router = useRouter();
+  const { toast } = useToast();
 
   const { data: categories } = useQuery({
     queryKey: ['categories'],
@@ -46,6 +48,10 @@ export default function CreateProductPage() {
     };
     await createProduct(productData);
     router.push('/admin/products/all');
+    toast({
+      title: 'Product Added',
+      description: 'The product has been successfully added to the database.',
+    });
   }
 
   return (
