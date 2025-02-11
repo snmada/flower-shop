@@ -92,72 +92,66 @@ export default function FeaturedProductsPage() {
   return (
     <div className='bg-[#FBFBFB] px-6 py-6 mt-10 rounded-lg'>
       <div className='mb-4 flex flex-row items-center justify-between'>
-          <div className='flex flex-row items-center'>
-            {isEditing ? (
-              <p className='font-semibold pr-2'>Selected Products: </p>
+        <div className='flex flex-row items-center'>
+          <div className='h-3 w-3 bg-[#88D66C] rounded-full mr-3'></div>
+          <p className='font-semibold pr-2'>{isEditing? 'Selected Products' : 'Featured Products'}: {' '}</p>
+          <div className='flex flex-wrap gap-4'>
+            {isLoadingFeaturedProducts? (
+              Array.from({ length: 3 }).map((_, index) => 
+                <Skeleton key={index} className='bg-gray-300 h-7 w-20 rounded-full' />)
             ) : (
-              <div className='flex flex-row items-center'>
-                <div className='h-3 w-3 bg-[#88D66C] rounded-full mr-3'></div>
-                <p className='font-semibold pr-2'>Featured Products: {' '}</p>
-                <div className='flex flex-wrap gap-4'>
-                  {isLoadingFeaturedProducts? (
-                    Array.from({ length: 3 }).map((_, index) => 
-                      <Skeleton key={index} className='bg-gray-300 h-7 w-20 rounded-full'/>)
-                  ) : (
-                    <>
-                    {featuredProducts.length === 0? (
-                      <span className='text-gray-400'>No featured products selected</span>
-                    ) : (
-                      <>
-                        {(isEditing ? editingProducts : selectedProducts).map((productId) => {
-                          const product = products.find((p) => p.id === productId) || featuredProducts.find((p) => p.id === productId);
-                          return (
-                            product && (
-                              <div key={product.id}>
-                                <ActionableItem
-                                  name={product.name}
-                                  isActionable={isEditing}
-                                  onAction={() => handleSelectProduct(product.id)}
-                                />
-                              </div>
-                            )
-                          );
-                        })}
-                      </>
-                    )}
-                    </>
-                  )}
-                </div>
-              </div>
+              <>
+              {featuredProducts.length === 0? (
+                <span className='text-gray-400'>No featured products selected</span>
+              ) : (
+                <>
+                {(isEditing ? editingProducts : selectedProducts).map((productId) => {
+                  const product = products.find((p) => p.id === productId) || featuredProducts.find((p) => p.id === productId);
+                  return (
+                    product && (
+                      <div key={product.id}>
+                        <ActionableItem
+                          name={product.name}
+                          isActionable={isEditing}
+                          onAction={() => handleSelectProduct(product.id)}
+                        />
+                      </div>
+                    )
+                  );
+                })}
+                </>
+              )}
+              </>
             )}
           </div>
-          <div>
-            {!isEditing ? (
+        </div>
+        <div>
+          {!isEditing ? (
+            <Button
+              variant='default'
+              onClick={handleEditClick} 
+              className='bg-black text-white'
+            >
+              Edit
+            </Button>
+          ) : (
+            <div className='flex gap-4'>
               <Button
-                variant='default'
-                onClick={handleEditClick} 
-                className='bg-black text-white'
+                variant='outline'
+                onClick={handleCancelClick}
               >
-                Edit
+                Cancel
               </Button>
-            ) : (
-              <div className='flex gap-4'>
-                <Button
-                  variant='outline'
-                  onClick={handleCancelClick}
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  onClick={handleSaveClick} 
-                  className='bg-black text-white'
-                  disabled={editingProducts.length < 3}
-                >
-                  Save
-                </Button>
-              </div>
-            )}
-          </div>
+              <Button 
+                onClick={handleSaveClick} 
+                className='bg-black text-white'
+                disabled={editingProducts.length < 3}
+              >
+                Save
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
       <div className='p-5 my-5 rounded-md bg-white border border-gray-200'>
         <SearchInput 
