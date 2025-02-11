@@ -13,10 +13,12 @@ import { getAllCategories } from '@/actions/categories';
 import { getFeaturedProducts } from '@/actions/products';
 import ActionableItem from '@/components/ui/custom/actionable-item';
 import { Skeleton } from '@/components/ui/shadcn/skeleton';
+import { useToast } from '@/hooks/use-toast';
 
 const DEFAULT_PAGE_SIZE = 10;
 
 export default function FeaturedProductsPage() {
+  const { toast } = useToast();
   const { searchName, handleSearch } = useSearch();
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
@@ -75,6 +77,10 @@ export default function FeaturedProductsPage() {
         setSelectedProducts(editingProducts);
         setEditingProducts([]);
         setIsEditing(false);
+        toast({
+          title: 'Featured Products Updated',
+          description: 'The featured products list has been successfully updated.',
+        });
       },
     });
   };
