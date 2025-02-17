@@ -15,7 +15,7 @@ interface ProductFormData {
   stock: number;
   category: string;
   flowers: { id: string; name: string }[];
-  imageUrl: string;
+  image: string;
 }
 
 export default function UpdateProductPage() {
@@ -47,7 +47,7 @@ export default function UpdateProductPage() {
       id: product!.id,
       name: values.name,
       description: values.description,
-      imageUrl: values.imageUrl.startsWith('/') ? values.imageUrl : '/' + values.imageUrl,
+      image: values.image,
       price: values.price,
       stock: values.stock,
       category: values.category,
@@ -69,7 +69,7 @@ export default function UpdateProductPage() {
         initialData={{
           name: product?.name || '',
           description: product?.description || '',
-          imageUrl: product?.imageUrl || '',
+          image: product?.image || '',
           price: product?.price || 0,
           stock: product?.stock || 0,
           category: product?.category?.id || '',

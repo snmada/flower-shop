@@ -94,7 +94,7 @@ export async function getAllProducts({
       id: product.id,
       name: product.name,
       description: product.description,
-      imageUrl: product.imageUrl,
+      image: '/' + product.image,
       price: product.price,
       stock: product.stock,
       category: product.category?.name,
@@ -107,7 +107,7 @@ export async function getAllProducts({
 export async function createProduct({
   name,
   description,
-  imageUrl,
+  image,
   price,
   stock,
   category,
@@ -115,7 +115,7 @@ export async function createProduct({
 }: {
   name: string;
   description: string;
-  imageUrl: string;
+  image: string;
   price: number;
   stock: number;
   category: string;
@@ -125,7 +125,7 @@ export async function createProduct({
     data: {
       name,
       description,
-      imageUrl: imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl,
+      image,
       price,
       stock,
       category: {
@@ -160,7 +160,7 @@ export async function getProductById(id: string) {
     id: product.id,
     name: product.name,
     description: product.description,
-    imageUrl: product.imageUrl,
+    image: '/' + product.image,
     price: product.price,
     stock: product.stock,
     category: {
@@ -178,7 +178,7 @@ export async function updateProduct({
   id,
   name,
   description,
-  imageUrl,
+  image,
   price,
   stock,
   category,
@@ -187,7 +187,7 @@ export async function updateProduct({
   id: string;
   name: string;
   description: string;
-  imageUrl: string;
+  image: string;
   price: number;
   stock: number;
   category: string;
@@ -198,7 +198,7 @@ export async function updateProduct({
     data: {
       name,
       description,
-      imageUrl: imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl,
+      image,
       price,
       stock,
       category: {
@@ -252,7 +252,7 @@ export async function getFeaturedProducts() {
       id: product.id,
       name: product.name,
       description: product.description,
-      imageUrl: product.imageUrl,
+      image: '/' + product.image,
       price: product.price,
       stock: product.stock,
       category: product.category?.name,

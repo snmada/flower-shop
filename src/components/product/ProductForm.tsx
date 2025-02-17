@@ -19,7 +19,7 @@ import Combobox from '@/components/ui/shadcn/combobox';
 import ActionableItem from '@/components/ui/custom/actionable-item';
 import { Skeleton } from '@/components/ui/shadcn/skeleton';
 
-const URL_DEFAULT_IMAGE = '/default.jpg';
+const URL_DEFAULT_IMAGE = 'default.jpg';
 
 const formSchema = z.object({
   name: 
@@ -28,7 +28,7 @@ const formSchema = z.object({
   description: 
     z.string()
      .min(1, 'This field is required'),
-  imageUrl: 
+  image: 
     z.string()
      .min(1, 'This field is required. Please upload an image or select the checkbox'),
   price: 
@@ -60,7 +60,7 @@ interface ProductFormProps {
   initialData?: {
     name: string;
     description: string;
-    imageUrl: string;
+    image: string;
     price: number;
     stock: number;
     category: string;
@@ -81,7 +81,7 @@ export default function ProductForm({
   flowers,
   isLoading = false
 }: ProductFormProps){
-  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.imageUrl || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image || null);
   const [inputKey, setInputKey] = useState(0);
   const [defaultImage, setDefaultImage] = useState(false);
 
@@ -90,7 +90,7 @@ export default function ProductForm({
     defaultValues: initialData || {
       name: '',
       description: '',
-      imageUrl: '',
+      image: '',
       price: 0,
       stock: 0,
       category: '',
@@ -103,7 +103,7 @@ export default function ProductForm({
       form.reset({
         ...initialData,
       });
-      setImagePreview(initialData?.imageUrl || null);
+      setImagePreview(initialData?.image || null);
     }
   }, [initialData, form]);
 
@@ -291,7 +291,7 @@ export default function ProductForm({
           }}
         />
         <FormField
-          name='imageUrl'
+          name='image'
           control={form.control}
           render={({ field }) => (
             <FormItem>
@@ -336,7 +336,7 @@ export default function ProductForm({
                       {imagePreview && (
                         <>
                         <Image
-                          src={imagePreview}
+                          src={'/' + imagePreview}
                           alt='Image preview'
                           width={40}
                           height={40}
@@ -347,7 +347,7 @@ export default function ProductForm({
                             onClick={() => {
                               setImagePreview(null);
                               setInputKey((prevKey) => prevKey + 1);
-                              form.setValue('imageUrl', '');
+                              form.setValue('image', '');
                             }}
                             className='bg-white text-red-500 border border-red-500 rounded-full p-2'
                           >

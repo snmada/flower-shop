@@ -9,7 +9,7 @@ import { ToastAction } from '@/components/ui/shadcn/toast';
 interface Product {
   id: string;
   name: string;
-  imageUrl: string;
+  image: string;
   price: number;
   quantity: number;
 }

@@ -24,7 +24,7 @@ interface ProductCardProps {
   id: string;
   name: string;
   description: string;
-  imageUrl: string;
+  image: string;
   price: number;
   category?: string;
   variant?: 'standard' | 'detailed';
@@ -34,7 +34,7 @@ export default function ProductCard({
   id,
   name,
   description,
-  imageUrl,
+  image,
   price,
   category,
   variant = 'detailed',
@@ -42,7 +42,7 @@ export default function ProductCard({
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    const product = { id, name, imageUrl, price, quantity: 1 };
+    const product = { id, name, image, price, quantity: 1 };
     addToCart(product);
   };
 
@@ -52,7 +52,7 @@ export default function ProductCard({
     <div className={styles.card}>
       <div className={styles.imageWrapper}>
         <Image
-          src={imageUrl}
+          src={image}
           alt={name}
           width={variant === 'detailed' ? 200 : 170}
           height={variant === 'detailed' ? 300 : 250}
