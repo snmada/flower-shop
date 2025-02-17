@@ -19,8 +19,6 @@ import Combobox from '@/components/ui/shadcn/combobox';
 import ActionableItem from '@/components/ui/custom/actionable-item';
 import { Skeleton } from '@/components/ui/shadcn/skeleton';
 
-const URL_DEFAULT_IMAGE = 'default.jpg';
-
 const formSchema = z.object({
   name: 
     z.string()
@@ -28,9 +26,11 @@ const formSchema = z.object({
   description: 
     z.string()
      .min(1, 'This field is required'),
-  image: 
-    z.string()
-     .min(1, 'This field is required. Please upload an image or select the checkbox'),
+  imageData: 
+    z.union([
+      z.string().min(1, { message: 'Image is required' }),
+      z.instanceof(File),
+    ]).nullable().refine(value => value !== null, { message: 'Image is required' }),
   price: 
     z.preprocess(
      (value) => (value === '' ? 0 : Number(value)),
@@ -81,29 +81,36 @@ export default function ProductForm({
   flowers,
   isLoading = false
 }: ProductFormProps){
-  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.image || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialData?.image ? `${process.env.NEXT_PUBLIC_AWS_S3_URL}${initialData?.image}` : null
+  );  
   const [inputKey, setInputKey] = useState(0);
-  const [defaultImage, setDefaultImage] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      name: '',
-      description: '',
-      image: '',
-      price: 0,
-      stock: 0,
-      category: '',
-      flowers: [],
+    defaultValues: {
+      name: initialData?.name || '',
+      description: initialData?.description || '',
+      imageData: initialData?.image || undefined,
+      price: initialData?.price || 0,
+      stock: initialData?.stock || 0,
+      category: initialData?.category || '',
+      flowers: initialData?.flowers || [],
     },
   });
 
   useEffect(() => {
     if (initialData) {
       form.reset({
-        ...initialData,
+        name: initialData.name,
+        description: initialData.description,
+        imageData: initialData.image,
+        price: initialData.price,
+        stock: initialData.stock,
+        category: initialData.category,
+        flowers: initialData.flowers || [],
       });
-      setImagePreview(initialData?.image || null);
+      setImagePreview(initialData?.image ? `${process.env.NEXT_PUBLIC_AWS_S3_URL}${initialData?.image}` : null);
     }
   }, [initialData, form]);
 
@@ -291,7 +298,7 @@ export default function ProductForm({
           }}
         />
         <FormField
-          name='image'
+          name='imageData'
           control={form.control}
           render={({ field }) => (
             <FormItem>
@@ -307,7 +314,7 @@ export default function ProductForm({
                         htmlFor='file-input'
                         className='flex flex-col gap-3 items-center cursor-pointer'
                       >
-                        {!imagePreview && !defaultImage && (
+                        {!imagePreview && (
                           <>
                           <ImagePlus 
                             size={40} 
@@ -317,74 +324,43 @@ export default function ProductForm({
                           </>
                         )}
                       </label>
-                      {!defaultImage && (
-                        <Input
-                          key={inputKey}
-                          id='file-input'
-                          type='file'
-                          accept='image/*'
-                          className='hidden'
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              setImagePreview(URL.createObjectURL(file));
-                              field.onChange(file.name);
-                            }
-                          }}
-                        />
-                      )}
+                      <Input
+                        key={inputKey}
+                        id='file-input'
+                        type='file'
+                        accept='image/*'
+                        className='hidden'
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setImagePreview(URL.createObjectURL(file));
+                            field.onChange(file);
+                          }
+                        }}
+                      />
                       {imagePreview && (
                         <>
                         <Image
-                          src={'/' + imagePreview}
+                          src={imagePreview}
                           alt='Image preview'
                           width={40}
                           height={40}
                           className='w-40 h-40 object-cover rounded-md mb-2'
                         />
-                        {!defaultImage && (
-                          <Button
-                            onClick={() => {
-                              setImagePreview(null);
-                              setInputKey((prevKey) => prevKey + 1);
-                              form.setValue('image', '');
-                            }}
-                            className='bg-white text-red-500 border border-red-500 rounded-full p-2'
-                          >
-                            <Trash2 size={18} />
-                          </Button>
-                        )}
+                        <Button
+                          onClick={() => {
+                            setImagePreview(null);
+                            setInputKey((prevKey) => prevKey + 1);
+                            field.onChange(null);
+                          }}
+                          className='bg-white text-red-500 border border-red-500 rounded-full p-2'
+                        >
+                          <Trash2 size={18} />
+                        </Button>
                         </>
                       )}
                       </>
                     )}
-                  </div>
-                  <div className='mt-3 flex flex-col'>
-                    <p className='text-sm text-gray-700'>Don't have an image yet?</p>
-                    <div className='flex items-center gap-3 p-2'>
-                      <Input
-                        type='checkbox'
-                        id='default-image-checkbox'
-                        className='h-4 w-4'
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setDefaultImage(true);
-                            setImagePreview(URL_DEFAULT_IMAGE);
-                            field.onChange(URL_DEFAULT_IMAGE);
-                          } else {
-                            setDefaultImage(false);
-                            setImagePreview(null);
-                            field.onChange('');
-                          }
-                        }}
-                      />
-                      <label
-                        htmlFor='default-image-checkbox'
-                        className='text-sm text-gray-700'
-                      >
-                        Select this checkbox to set a default image
-                      </label>
-                    </div>
                   </div>
                 </div>
               </FormControl>

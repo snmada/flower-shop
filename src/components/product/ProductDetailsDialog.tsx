@@ -84,7 +84,7 @@ export default function ProductDetailsDialog({
                 <Skeleton className='bg-gray-300 w-40 h-40' />
               ) : (
                 <Image
-                  src={product?.image ?? '/default.jpg'}
+                  src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${product?.image}`}
                   alt={product?.name || 'Product Image'}
                   width={40}
                   height={40}

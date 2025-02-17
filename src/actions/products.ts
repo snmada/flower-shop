@@ -4,6 +4,8 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+import { uploadToS3 } from '@/lib/aws-s3';
+
 export async function getAllProducts({
   name,
   category,
@@ -94,7 +96,7 @@ export async function getAllProducts({
       id: product.id,
       name: product.name,
       description: product.description,
-      image: '/' + product.image,
+      image: product.image,
       price: product.price,
       stock: product.stock,
       category: product.category?.name,
@@ -107,7 +109,7 @@ export async function getAllProducts({
 export async function createProduct({
   name,
   description,
-  image,
+  imageData,
   price,
   stock,
   category,
@@ -115,12 +117,20 @@ export async function createProduct({
 }: {
   name: string;
   description: string;
-  image: string;
+  imageData: File | string;
   price: number;
   stock: number;
   category: string;
   flowers: { id: string; name: string }[];
 }) {
+  let image;
+
+  if (typeof imageData === 'string') {
+    image = imageData;
+  } else if (imageData instanceof File) {
+    image = await uploadToS3(imageData);
+  }
+
   await prisma.product.create({
     data: {
       name,
@@ -160,7 +170,7 @@ export async function getProductById(id: string) {
     id: product.id,
     name: product.name,
     description: product.description,
-    image: '/' + product.image,
+    image: product.image,
     price: product.price,
     stock: product.stock,
     category: {
@@ -178,7 +188,7 @@ export async function updateProduct({
   id,
   name,
   description,
-  image,
+  imageData,
   price,
   stock,
   category,
@@ -187,12 +197,29 @@ export async function updateProduct({
   id: string;
   name: string;
   description: string;
-  image: string;
+  imageData: File | string;
   price: number;
   stock: number;
   category: string;
   flowers: { id: string; name: string }[];
 }) {
+  let image;
+
+  const product = await prisma.product.findUnique({
+    where: { id },
+    select: { image: true },
+  });
+
+  if (!product) {
+    return { message: 'Product not found' };
+  }
+
+  if (typeof imageData === 'string') {
+    image = imageData;
+  } else if (imageData instanceof File) {
+    image = await uploadToS3(imageData);
+  }
+
   await prisma.product.update({
     where: { id },
     data: {
@@ -252,7 +279,7 @@ export async function getFeaturedProducts() {
       id: product.id,
       name: product.name,
       description: product.description,
-      image: '/' + product.image,
+      image: product.image,
       price: product.price,
       stock: product.stock,
       category: product.category?.name,
