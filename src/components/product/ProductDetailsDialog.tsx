@@ -44,10 +44,8 @@ export default function ProductDetailsDialog({
         <Separator />
         <div className='flex flex-col gap-4'>
           <div> 
-            <p> 
-              <span className='font-semibold mr-2'>Description:</span> 
-              {isLoading? <Skeleton className='bg-gray-300 h-6 w-1/2' /> : product?.description}
-            </p>
+            <span className='font-semibold mr-2'>Description:</span> 
+            {isLoading? <Skeleton className='bg-gray-300 h-6 w-1/2' /> : product?.description}
           </div>
           <div className='flex flex-row gap-2'>
             <span className='font-semibold'>Price:</span>
