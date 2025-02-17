@@ -15,7 +15,7 @@ interface ProductFormData {
   stock: number;
   category: string;
   flowers: { id: string; name: string }[];
-  image: string;
+  imageData: File | string;
 }
 
 export default function UpdateProductPage() {
@@ -47,7 +47,7 @@ export default function UpdateProductPage() {
       id: product!.id,
       name: values.name,
       description: values.description,
-      image: values.image,
+      imageData: values.imageData,
       price: values.price,
       stock: values.stock,
       category: values.category,
@@ -75,8 +75,8 @@ export default function UpdateProductPage() {
           category: product?.category?.id || '',
           flowers: product?.flowers || [],
         }}
-        onCancel={handleCancel}
         onSubmit={onSubmit}
+        onCancel={handleCancel}
         categories={categories || []}
         flowers={flowers || []}
         isLoading={isLoading}

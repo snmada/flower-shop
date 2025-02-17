@@ -33,7 +33,7 @@ export default function CartItem({
         <X size={16} />
       </Button>
       <Image
-        src={product.image}
+        src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${product.image}`}
         alt={product.name}
         width={20}
         height={20}

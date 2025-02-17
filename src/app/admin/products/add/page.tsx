@@ -15,7 +15,7 @@ interface ProductFormData {
   stock: number;
   category: string;
   flowers: { id: string; name: string }[];
-  image: string;
+  imageData: File | string;
 }
 
 export default function CreateProductPage() {
@@ -40,7 +40,7 @@ export default function CreateProductPage() {
     const productData = {
       name: values.name,
       description: values.description,
-      image: values.image,
+      imageData: values.imageData,
       price: values.price,
       stock: values.stock,
       category: values.category,
