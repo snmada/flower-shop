@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-import { uploadToS3 } from '@/lib/aws-s3';
+import { uploadToS3, deleteFromS3 } from '@/lib/aws-s3';
 
 export async function getAllProducts({
   name,
@@ -217,6 +217,9 @@ export async function updateProduct({
   if (typeof imageData === 'string') {
     image = imageData;
   } else if (imageData instanceof File) {
+    if (product.image !== 'default.jpg') { 
+      await deleteFromS3(product.image);
+    }
     image = await uploadToS3(imageData);
   }
 
@@ -257,6 +260,8 @@ export async function deleteProductById(id: string) {
   await prisma.product.delete({
     where: { id },
   });
+
+  await deleteFromS3(product.image);
 
   return {
     message: 'Product deleted successfully',
