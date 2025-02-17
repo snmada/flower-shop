@@ -6,7 +6,7 @@ import { useCart } from '@/context/CartContext';
 interface Product {
   id: string;
   name: string;
-  imageUrl: string;
+  image: string;
   price: number;
   quantity: number;
 }
@@ -33,7 +33,7 @@ export default function CartItem({
         <X size={16} />
       </Button>
       <Image
-        src={product.imageUrl}
+        src={product.image}
         alt={product.name}
         width={20}
         height={20}
