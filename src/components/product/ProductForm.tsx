@@ -394,6 +394,7 @@ export default function ProductForm({
         />
         <div className='flex justify-end gap-4'>
           <Button
+            type='button'
             className='bg-white border border-gray-300'
             onClick={onCancel}
           >
