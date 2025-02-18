@@ -19,6 +19,5 @@ export async function getAllFlowers() {
 
   } catch (error) {
     console.error('Error fetching flowers:', error);
-    return [];
   }
 }
