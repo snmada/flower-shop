@@ -33,15 +33,19 @@ export default function FilterAccordion({
   maxPrice,
   setMaxPrice
 }: FilterAccordionProps) {
-  const { data: categories, isLoading: isLoadingCategories } = useQuery({
+  const { data: categories, isLoading: isLoadingCategories, isError: errorCategories } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
   
-  const { data: flowers, isLoading: isLoadingFlowers } = useQuery({
+  const { data: flowers, isLoading: isLoadingFlowers, isError: errorFlowers } = useQuery({
     queryKey: ['flowers'],
     queryFn: () => getAllFlowers(),
   });
+
+  if (errorCategories || errorFlowers) {
+    throw new Error('Failed to fetch data');
+  }
 
   return (
     <Accordion type='multiple' defaultValue={['category', 'flowers', 'price']}>

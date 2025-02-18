@@ -25,85 +25,89 @@ export async function getAllProducts({
   take?: number;
   sortCriteria?: string;
 }) {
-  const filterConditions: {
-    category?: { name?: string };
-    flowers?: { some: { name: { in: string[] } } };
-    price?: { gte: number; lte: number };
-    name?: { contains: string; mode: 'insensitive' };
-  } = {};
-
-  if (category && category !== 'All categories') {
-    filterConditions.category = { name: category };
-  }
-
-  if (flowers && flowers.length > 0) {
-    filterConditions.flowers = {
-      some: {
-        name: {
-          in: flowers,
-        },
-      },
-    };
-  }
-
-  if (minPrice && maxPrice) {
-    filterConditions.price = {
-      gte: minPrice,
-      lte: maxPrice,
-    };
-  }
-
-  if (name) {
-    filterConditions.name = { contains: name.trim(), mode: 'insensitive' };
-  }
-
-  let criteria: any = {};
-
-  switch (sortCriteria) {
-    case 'price-asc':
-      criteria = { price: 'asc' };
-      break;
-    case 'price-desc':
-      criteria = { price: 'desc' };
-      break;
-    case 'a-z':
-      criteria = { name: 'asc' };
-      break;
-    case 'z-a':
-      criteria = { name: 'desc' };
-      break;
-    default:
-      criteria = { name: 'asc' }; 
-  }
+  try { 
+    const filterConditions: {
+      category?: { name?: string };
+      flowers?: { some: { name: { in: string[] } } };
+      price?: { gte: number; lte: number };
+      name?: { contains: string; mode: 'insensitive' };
+    } = {};
   
-  const products = await prisma.product.findMany({
-    skip,
-    take,
-    where: filterConditions,
-    include: {
-      category: true,
-      flowers: true,
-    },
-    orderBy: criteria,
-  });
-
-  const totalProducts = await prisma.product.count({
-    where: filterConditions,
-  });
-
-  return {
-    products: products.map(product => ({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      image: product.image,
-      price: product.price,
-      stock: product.stock,
-      category: product.category?.name,
-      flowers: product.flowers?.map(flower => flower.name),
-    })),
-    totalProducts,
-  } 
+    if (category && category !== 'All categories') {
+      filterConditions.category = { name: category };
+    }
+  
+    if (flowers && flowers.length > 0) {
+      filterConditions.flowers = {
+        some: {
+          name: {
+            in: flowers,
+          },
+        },
+      };
+    }
+  
+    if (minPrice && maxPrice) {
+      filterConditions.price = {
+        gte: minPrice,
+        lte: maxPrice,
+      };
+    }
+  
+    if (name) {
+      filterConditions.name = { contains: name.trim(), mode: 'insensitive' };
+    }
+  
+    let criteria: any = {};
+  
+    switch (sortCriteria) {
+      case 'price-asc':
+        criteria = { price: 'asc' };
+        break;
+      case 'price-desc':
+        criteria = { price: 'desc' };
+        break;
+      case 'a-z':
+        criteria = { name: 'asc' };
+        break;
+      case 'z-a':
+        criteria = { name: 'desc' };
+        break;
+      default:
+        criteria = { name: 'asc' }; 
+    }
+    
+    const products = await prisma.product.findMany({
+      skip,
+      take,
+      where: filterConditions,
+      include: {
+        category: true,
+        flowers: true,
+      },
+      orderBy: criteria,
+    });
+  
+    const totalProducts = await prisma.product.count({
+      where: filterConditions,
+    });
+  
+    return {
+      products: products.map(product => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        image: product.image,
+        price: product.price,
+        stock: product.stock,
+        category: product.category?.name,
+        flowers: product.flowers?.map(flower => flower.name),
+      })),
+      totalProducts,
+    } 
+  } catch (error) {
+    console.error('Error fetching products:', error);
+  }
 }
 
 export async function createProduct({
@@ -174,34 +178,38 @@ export async function createProduct({
 }
 
 export async function getProductById(id: string) {
-  const product = await prisma.product.findUnique({
-    where: { id },
-    include: {
-      category: true,
-      flowers: true,
-    },
-  });
-
-  if (!product) {
-    throw new Error('Product not found');
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        flowers: true,
+      },
+    });
+  
+    if (!product) {
+      throw new Error('Product not found');
+    }
+  
+    return {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      image: product.image,
+      price: product.price,
+      stock: product.stock,
+      category: {
+        id: product.category.id,
+        name: product.category.name,
+      },
+      flowers: product.flowers.map(flower => ({
+        id: flower.id,
+        name: flower.name,
+      })),
+    };
+  } catch (error) {
+    console.error('Error fetching product by id:', error);
   }
-
-  return {
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    image: product.image,
-    price: product.price,
-    stock: product.stock,
-    category: {
-      id: product.category.id,
-      name: product.category.name,
-    },
-    flowers: product.flowers.map(flower => ({
-      id: flower.id,
-      name: flower.name,
-    })),
-  };
 }
 
 export async function updateProduct({
@@ -321,28 +329,32 @@ export async function deleteProductById(id: string) {
 }
 
 export async function getFeaturedProducts() {
-  const featuredProducts = await prisma.product.findMany({
-    where: {
-      isFeatured: true, 
-    },
-    include: {
-      category: true,
-      flowers: true,
-    },
-  });
-
-  return {
-    featuredProducts: featuredProducts.map(product => ({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      image: product.image,
-      price: product.price,
-      stock: product.stock,
-      category: product.category?.name,
-      flowers: product.flowers?.map(flower => flower.name),
-    })),
-  } 
+  try {
+    const featuredProducts = await prisma.product.findMany({
+      where: {
+        isFeatured: true, 
+      },
+      include: {
+        category: true,
+        flowers: true,
+      },
+    });
+  
+    return {
+      featuredProducts: featuredProducts.map(product => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        image: product.image,
+        price: product.price,
+        stock: product.stock,
+        category: product.category?.name,
+        flowers: product.flowers?.map(flower => flower.name),
+      })),
+    } 
+  } catch (error) {
+    console.error('Error fetching featured products:', error);
+  }
 }
 
 export async function updateFeaturedProducts(productIds: string[]) {

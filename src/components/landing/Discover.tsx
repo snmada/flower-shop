@@ -8,12 +8,16 @@ import { useQuery } from '@tanstack/react-query';
 import ProductCardSkeleton from '@/components/product/ProductCardSkeleton';
 
 export default function Discover() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError: errorFeaturedProducts } = useQuery({
     queryKey: ['featuredProducts'],
     queryFn: getFeaturedProducts,
   });
 
   const { featuredProducts = [] } = data || {};
+
+  if(errorFeaturedProducts) {
+    throw new Error('Failed to fetch data');
+  }
 
   return (
     <section 

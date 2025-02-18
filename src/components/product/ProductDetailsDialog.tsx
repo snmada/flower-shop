@@ -26,11 +26,15 @@ export default function ProductDetailsDialog({
   isOpen,
   onClose,
 }: ProductDetailsDialogProps) {
-  const { data: product, isLoading } = useQuery({
+  const { data: product, isLoading, isError: errorProduct } = useQuery({
     queryKey: ['product', productId],
     queryFn: () => productId ? getProductById(productId) : null,
     enabled: !!productId, 
   });
+
+  if (errorProduct) {
+    throw new Error('Failed to fetch data');
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

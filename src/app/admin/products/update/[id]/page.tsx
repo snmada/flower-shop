@@ -23,17 +23,17 @@ export default function UpdateProductPage() {
   const id = useParams().id;
   const { toast } = useToast();
 
-  const { data: categories, isLoading: categoriesLoading } = useQuery({
+  const { data: categories, isLoading: categoriesLoading, isError: errorCategories } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
 
-  const { data: flowers, isLoading: flowersLoading } = useQuery({
+  const { data: flowers, isLoading: flowersLoading, isError: errorFlowers } = useQuery({
     queryKey: ['flowers'],
     queryFn: () => getAllFlowers(),
   });
 
-  const { data: product, isLoading: productLoading } = useQuery({
+  const { data: product, isLoading: productLoading, isError: errorProduct } = useQuery({
     queryKey: ['product', id],
     queryFn: () => getProductById(id as string),
   });
@@ -72,6 +72,10 @@ export default function UpdateProductPage() {
   }
 
   const isLoading = categoriesLoading && flowersLoading && productLoading;
+
+  if (errorCategories || errorFlowers || errorProduct) {
+    throw new Error('Failed to fetch data');
+  }
 
   return (
     <div className='bg-[#FBFBFB] px-6 py-6 mt-10 rounded-lg'>
