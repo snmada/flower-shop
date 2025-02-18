@@ -124,33 +124,53 @@ export async function createProduct({
   flowers: { id: string; name: string }[];
 }) {
   let image;
+  let uploadedImage;
 
-  if (typeof imageData === 'string') {
-    image = imageData;
-  } else if (imageData instanceof File) {
-    image = await uploadToS3(imageData);
-  }
-
-  await prisma.product.create({
-    data: {
-      name,
-      description,
-      image,
-      price,
-      stock,
-      category: {
-        connect: {
-          id: category,
+  try {
+    if (typeof imageData === 'string') {
+      image = imageData;
+    } else if (imageData instanceof File) {
+      image = await uploadToS3(imageData);
+      uploadedImage = image;
+    }
+  
+    await prisma.product.create({
+      data: {
+        name,
+        description,
+        image,
+        price,
+        stock,
+        category: {
+          connect: {
+            id: category,
+          },
+        },
+        flowers: {
+          connect: flowers.map(flower => ({ id: flower.id })),
         },
       },
-      flowers: {
-        connect: flowers.map(flower => ({ id: flower.id })),
-      },
-    },
-  });
-  return {
-    message: 'Product created successfully',
-  };
+    });
+
+    return {
+      success: true,
+      message: 'The product has been successfully added to the database.',
+    };
+  } catch (error) {
+    if (uploadedImage) {
+      try {
+        await deleteFromS3(uploadedImage);
+      } catch (cleanupError) {
+        console.error('Failed to delete image from S3:', cleanupError);
+      }
+    }
+
+    console.error('Error creating product:', error);
+    return { 
+      success: false, 
+      message: 'Failed to create product. Please try again.' 
+    };
+  }
 }
 
 export async function getProductById(id: string) {
@@ -204,68 +224,100 @@ export async function updateProduct({
   flowers: { id: string; name: string }[];
 }) {
   let image;
+  let uploadedImage;
 
-  const product = await prisma.product.findUnique({
-    where: { id },
-    select: { image: true },
-  });
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id },
+      select: { image: true },
+    });
 
-  if (!product) {
-    return { message: 'Product not found' };
+    if (!product) {
+      return { success: false, message: 'Product not found' };
+    }
+
+    if (typeof imageData === 'string') {
+      image = imageData;
+    } else if (imageData instanceof File) {
+      if (product.image !== 'default.jpg') { 
+        await deleteFromS3(product.image);
+      }
+      image = await uploadToS3(imageData);
+      uploadedImage = image;
+    }
+
+    await prisma.product.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        image,
+        price,
+        stock,
+        category: {
+          connect: {
+            id: category,
+          },
+        },
+        flowers: {
+          set: [],
+          connect: flowers.map(flower => ({ id: flower.id })),
+        },
+      },
+    });
+
+    return {
+      success: true,
+      message: 'The product details have been successfully updated in the database.',
+    };
+  } catch (error) {
+    if (uploadedImage) {
+      try {
+        await deleteFromS3(uploadedImage);
+      } catch (cleanupError) {
+        console.error('Failed to delete image from S3:', cleanupError);
+      }
+    }
+
+    console.error('Error updating product:', error);
+    return { 
+      success: false, 
+      message: 'Failed to update product. Please try again.' 
+    };
   }
+}
 
-  if (typeof imageData === 'string') {
-    image = imageData;
-  } else if (imageData instanceof File) {
+
+export async function deleteProductById(id: string) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+  
+    if (!product) {
+      return { success: false, message: 'Product not found' };
+    }
+  
+    await prisma.product.delete({
+      where: { id },
+    });
+
     if (product.image !== 'default.jpg') { 
       await deleteFromS3(product.image);
     }
-    image = await uploadToS3(imageData);
+  
+    return {
+      success: true,
+      message: 'The product has been successfully deleted from the database.',
+    };
+  } catch (error) {
+    console.error('Error deleting product:', error);
+
+    return {
+      success: false,
+      message: 'Failed to delete product. Please try again.',
+    };
   }
-
-  await prisma.product.update({
-    where: { id },
-    data: {
-      name,
-      description,
-      image,
-      price,
-      stock,
-      category: {
-        connect: {
-          id: category,
-        },
-      },
-      flowers: {
-        set: [],
-        connect: flowers.map(flower => ({ id: flower.id })),
-      },
-    },
-  });
-
-  return {
-    message: 'Product updated successfully',
-  };
-}
-
-export async function deleteProductById(id: string) {
-  const product = await prisma.product.findUnique({
-    where: { id },
-  });
-
-  if (!product) {
-    throw new Error('Product not found');
-  }
-
-  await prisma.product.delete({
-    where: { id },
-  });
-
-  await deleteFromS3(product.image);
-
-  return {
-    message: 'Product deleted successfully',
-  };
 }
 
 export async function getFeaturedProducts() {
@@ -294,24 +346,25 @@ export async function getFeaturedProducts() {
 }
 
 export async function updateFeaturedProducts(productIds: string[]) {
-  await prisma.product.updateMany({
-    data: { 
-      isFeatured: false,
-    },
-  });
-
-  await prisma.product.updateMany({
-    where: {
-      id: { 
-        in: productIds,
+  try {
+    await prisma.product.updateMany({
+      data: { 
+        isFeatured: false,
       },
-    },
-    data: { 
-      isFeatured: true,
-    },
-  });
-
-  return {
-    message: 'Featured products updated successfully',
-  };
+    });
+  
+    await prisma.product.updateMany({
+      where: {
+        id: { 
+          in: productIds,
+        },
+      },
+      data: { 
+        isFeatured: true,
+      },
+    });
+  } catch (error) {
+    console.error('Error updating featured products:', error);
+    throw new Error('Failed to update featured products. Please try again.');
+  }
 }

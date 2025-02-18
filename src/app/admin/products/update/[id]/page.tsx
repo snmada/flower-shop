@@ -53,11 +53,21 @@ export default function UpdateProductPage() {
       category: values.category,
       flowers: values.flowers,
     };
-    await updateProduct(productData);
+    const response = await updateProduct(productData);
+
+    if (!response.success) {
+      toast({
+        title: 'Error',
+        description: response.message,
+        variant: 'destructive'
+      });
+      return;
+    }
+
     router.push('/admin/products/all');
     toast({
-      title: 'Changes Saved',
-      description: 'The product details have been successfully updated in the database.',
+      title: 'Success',
+      description: response.message,
     });
   }
 

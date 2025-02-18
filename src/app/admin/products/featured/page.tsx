@@ -78,10 +78,17 @@ export default function FeaturedProductsPage() {
         setEditingProducts([]);
         setIsEditing(false);
         toast({
-          title: 'Featured Products Updated',
+          title: 'Success',
           description: 'The featured products list has been successfully updated.',
         });
       },
+      onError : (error: any) => {
+        toast({
+          title: 'Error',
+          description: 'Failed to update featured products. Please try again.',
+          variant: 'destructive'
+        });
+      }
     });
   };
 
