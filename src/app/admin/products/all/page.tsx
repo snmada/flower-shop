@@ -75,18 +75,22 @@ export default function AllProductsPage() {
 
   async function handleDeleteProduct(productId: string){
     if (!productId) return;
-    try {
-      await deleteProductById(productId);
+
+    const response = await deleteProductById(productId);
+
+    if (response.success) {
       toast({
-        title: 'Product Deleted',
-        description: 'The product has been successfully deleted from the database.',
+        title: 'Success',
+        description: response.message,
       });
-      refetch(); 
-    } catch (error) {
-      console.error('Error deleting product:', error);
-    } finally {
-      closeConfirmDialog();
+    } else {
+      toast({
+        title: 'Error',
+        description: response.message,
+        variant: 'destructive'
+      });
     }
+    closeConfirmDialog();
   };
 
   return (

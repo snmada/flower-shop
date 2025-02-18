@@ -46,11 +46,21 @@ export default function CreateProductPage() {
       category: values.category,
       flowers: values.flowers,
     };
-    await createProduct(productData);
+    const response = await createProduct(productData);
+
+    if (!response.success) {
+      toast({
+        title: 'Error',
+        description: response.message,
+        variant: 'destructive'
+      });
+      return;
+    }
+
     router.push('/admin/products/all');
     toast({
-      title: 'Product Added',
-      description: 'The product has been successfully added to the database.',
+      title: 'Success',
+      description: response.message,
     });
   }
 
