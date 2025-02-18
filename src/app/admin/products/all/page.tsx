@@ -30,7 +30,7 @@ export default function AllProductsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
-  const { data, refetch, isLoading } = useQuery({
+  const { data, refetch, isLoading, isError: errorProducts } = useQuery({
     queryKey: ['products', currentPage, pageSize, searchName, selectedCategory],
     queryFn: () =>
       getAllProducts({
@@ -43,7 +43,7 @@ export default function AllProductsPage() {
 
   const { products = [], totalProducts = 0 } = data || {};
 
-  const { data: categories } = useQuery({
+  const { data: categories, isError: errorCategories } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
@@ -92,6 +92,10 @@ export default function AllProductsPage() {
     }
     closeConfirmDialog();
   };
+
+  if (errorProducts || errorCategories) {
+    throw new Error('Failed to fetch data');
+  }
 
   return (
     <div className='flex flex-col gap-5 pt-3'>

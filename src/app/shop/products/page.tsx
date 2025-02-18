@@ -19,7 +19,7 @@ export default function ProductsPage() {
   const [skip, setSkip] = useState<number>(0);
   const [selectedSortCriteria, setSelectedSortCriteria] = useState<string>('a-z');
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError: errorProducts } = useQuery({
     queryKey: ['products', selectedCategory, selectedFlowers, minPrice, maxPrice, skip, searchName, selectedSortCriteria],
     queryFn: () =>
       getAllProducts({
@@ -33,6 +33,10 @@ export default function ProductsPage() {
         sortCriteria: selectedSortCriteria,
       }),
   });
+
+  if (errorProducts) {
+    throw new Error('Failed to fetch data');
+  }
 
   return (
     <div className='flex flex-col lg:flex-row gap-6'>

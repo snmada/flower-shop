@@ -22,12 +22,12 @@ export default function CreateProductPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const { data: categories } = useQuery({
+  const { data: categories, isError: errorCategories } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
 
-  const { data: flowers } = useQuery({
+  const { data: flowers, isError: errorFlowers } = useQuery({
     queryKey: ['flowers'],
     queryFn: () => getAllFlowers(),
   });
@@ -62,6 +62,10 @@ export default function CreateProductPage() {
       title: 'Success',
       description: response.message,
     });
+  }
+
+  if (errorCategories || errorFlowers) {
+    throw new Error('Failed to fetch data');
   }
 
   return (

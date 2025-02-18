@@ -27,7 +27,7 @@ export default function FeaturedProductsPage() {
   const [editingProducts, setEditingProducts] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data, isLoading: isLoadingProducts } = useQuery({
+  const { data, isLoading: isLoadingProducts, isError: errorProducts } = useQuery({
     queryKey: ['products', currentPage, pageSize, searchName, selectedCategory],
     queryFn: () =>
       getAllProducts({
@@ -38,12 +38,12 @@ export default function FeaturedProductsPage() {
       }),
   });
 
-  const { data: categories } = useQuery({
+  const { data: categories, isError: errorCategories } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getAllCategories(),
   });
 
-  const { data: featuredProductsData, isLoading: isLoadingFeaturedProducts } = useQuery({
+  const { data: featuredProductsData, isLoading: isLoadingFeaturedProducts, isError: errorFeaturedProducts } = useQuery({
     queryKey: ['featuredProducts'],
     queryFn: getFeaturedProducts,
   });
@@ -101,6 +101,10 @@ export default function FeaturedProductsPage() {
       setEditingProducts([...editingProducts, id]);
     }
   };
+
+  if (errorProducts || errorCategories || errorFeaturedProducts) {
+    throw new Error('Failed to fetch data');
+  }
 
   return (
     <div className='bg-[#FBFBFB] px-6 py-6 mt-10 rounded-lg'>
