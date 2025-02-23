@@ -32,13 +32,15 @@ export default function CartItem({
       >
         <X size={16} />
       </Button>
-      <Image
-        src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${product.image}`}
-        alt={product.name}
-        width={20}
-        height={20}
-        className='w-20 h-20 object-cover rounded-lg'
-      />
+      <div className='relative w-32 h-32'>
+        <Image
+          src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${product.image}`}
+          alt={product.name}
+          layout='fill'
+          objectFit='cover'
+          className='rounded-lg'
+        />
+      </div>
       <div className='ml-4 flex-grow'>
         <h2 className='text-[16px] font-semibold'>{product.name}</h2>
         <p className='text-gray-500'>${product.price}</p>

@@ -77,7 +77,7 @@ export default function ProductGrid({
       </div>
     ) : (
       <>
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
           {isLoading
             ? Array.from({ length: 3 }).map((_, index) => <ProductCardSkeleton key={index} />)
             : viewedProducts.map((product) => (

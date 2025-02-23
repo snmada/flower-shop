@@ -63,7 +63,7 @@ export default function ProductDetailsDialog({
             <span className='font-semibold'>Category:</span>
             {isLoading? <Skeleton className='bg-gray-300 h-6 w-24' /> : product?.category.name}
           </div>
-          <div className='flex flex-wrap gap-2'>
+          <div className='flex flex-wrap items-center gap-2'>
             <span className='font-semibold'>Flowers:</span>{' '}
             {isLoading ? (
               Array.from({ length: 3 }).map((_, index) => 
@@ -83,17 +83,19 @@ export default function ProductDetailsDialog({
           </div>
           <div>
             <span className='font-semibold'>Image:</span>
-            <div className='mt-2'>
+            <div className='flex justify-center mt-2 border border-gray-200 border-dashed border-4 p-6'>
               {isLoading ? (
                 <Skeleton className='bg-gray-300 w-40 h-40' />
               ) : (
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${product?.image}`}
-                  alt={product?.name || 'Product Image'}
-                  width={40}
-                  height={40}
-                  className='w-40 h-40 object-cover rounded-md mb-2'
-                />
+                <div className='relative w-64 h-64'>
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${product?.image}`}
+                    alt={product?.name || 'Product Image'}
+                    layout='fill'
+                    objectFit='cover'
+                    className='rounded-lg'
+                  />
+                </div>
               )}
             </div>
           </div>
