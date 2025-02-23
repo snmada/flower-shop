@@ -5,16 +5,16 @@ import { useCart } from '@/context/CartContext';
 
 const VARIANTS = {
   standard: {
-    card: 'flex items-center justify-center p-8 gap-8 h-[360px]',
-    imageWrapper: '',
-    image: 'rounded-[150px] shadow-lg md:w-[200px] md:h-[300px]', 
+    card: 'flex items-center justify-center p-8 gap-8 h-[350px]',
+    imageWrapper: 'relative w-48 h-48 sm:h-64 sm:w-48 md:h-80 md:w-64',
+    image: 'rounded-[150px] shadow-lg', 
     description: 'text-sm text-gray-500 w-[150px] h-[65px]',
     content: 'flex flex-col text-left', 
   },
   detailed: {
     card: 'rounded-md shadow-lg bg-white',
-    imageWrapper: 'w-full h-[300px]',
-    image: 'w-full h-full object-cover rounded-t-md',
+    imageWrapper: 'relative w-full h-[400px]',
+    image: 'rounded-t-md',
     description: 'text-sm text-gray-500 h-[45px]',
     content: 'p-5',
   },
@@ -54,9 +54,8 @@ export default function ProductCard({
         <Image
           src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${image}`}
           alt={name}
-          width={variant === 'detailed' ? 200 : 170}
-          height={variant === 'detailed' ? 300 : 250}
-          quality={100}
+          layout='fill'
+          objectFit='cover'
           className={styles.image}
         />
       </div>

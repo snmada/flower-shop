@@ -28,7 +28,7 @@ export default function Discover() {
       <h1 className='text-4xl font-semibold text-gray-800 mb-12 text-center'>
         'You Can't Miss' COLLECTION
       </h1>
-      <div className='grid grid-cols-1 xl:grid-cols-3 gap-10'>
+      <div className='grid grid-cols-1 2xl:grid-cols-3 gap-10'>
         {isLoading
           ? Array.from({ length: 3 }).map((_, index) => <ProductCardSkeleton key={index} variant='standard' />)
           : featuredProducts.map((product) => (

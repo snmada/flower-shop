@@ -340,13 +340,15 @@ export default function ProductForm({
                       />
                       {imagePreview && (
                         <>
-                        <Image
-                          src={imagePreview}
-                          alt='Image preview'
-                          width={40}
-                          height={40}
-                          className='w-40 h-40 object-cover rounded-md mb-2'
-                        />
+                        <div className='relative w-80 h-80'>
+                          <Image
+                            src={imagePreview}
+                            alt='Image preview'
+                            layout='fill'
+                            objectFit='cover'
+                            className='rounded-lg'
+                          />
+                        </div>
                         <Button
                           onClick={() => {
                             setImagePreview(null);
