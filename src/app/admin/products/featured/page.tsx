@@ -110,7 +110,7 @@ export default function FeaturedProductsPage() {
     <div className='bg-[#FBFBFB] px-6 py-6 mt-10 rounded-lg'>
       <div className='mb-4 flex flex-row items-center justify-between'>
         <div className='flex flex-row items-center'>
-          <div className='h-3 w-3 bg-[#88D66C] rounded-full mr-3'></div>
+          <div className='h-4 w-4 bg-[#FEF08A] rounded-full mr-3 border border-black'></div>
           <p className='font-semibold pr-2'>{isEditing? 'Selected Products' : 'Featured Products'}: {' '}</p>
           <div className='flex flex-wrap gap-4'>
             {isLoadingFeaturedProducts? (
@@ -224,19 +224,12 @@ export default function FeaturedProductsPage() {
               key={product.id}
               className={`p-4 border rounded-lg shadow-md ${isEditing && 'cursor-pointer'} ${
                 (isEditing ? editingProducts : selectedProducts).includes(product.id)
-                  ? 'bg-black text-white'
+                  ? 'bg-[#FEF08A]'
                   : 'bg-white'
               }`}
               onClick={() => handleSelectProduct(product.id)}
             >
-              <div className='flex items-center justify-between'>
-                <Package className='text-xl' />
-                {(isEditing ? editingProducts : selectedProducts).includes(product.id) && (
-                  <span className='text-[18px] text-black'>
-                    <Star fill='yellow' size={32} />
-                  </span>
-                )}
-              </div>
+              <Package className='text-xl' />
               <h3 className='mt-2 text-lg font-semibold'>{product.name}</h3>
             </div>
           ))}
