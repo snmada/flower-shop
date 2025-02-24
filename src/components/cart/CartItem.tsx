@@ -34,7 +34,7 @@ export default function CartItem({
       </Button>
       <div className='relative w-32 h-32'>
         <Image
-          src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${product.image}`}
+          src={process.env.NEXT_PUBLIC_AWS_S3_URL? `${process.env.NEXT_PUBLIC_AWS_S3_URL}${product.image}` : '/default.jpg'}
           alt={product.name}
           layout='fill'
           objectFit='cover'

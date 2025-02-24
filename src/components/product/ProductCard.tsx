@@ -52,7 +52,7 @@ export default function ProductCard({
     <div className={styles.card}>
       <div className={styles.imageWrapper}>
         <Image
-          src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${image}`}
+          src={process.env.NEXT_PUBLIC_AWS_S3_URL? `${process.env.NEXT_PUBLIC_AWS_S3_URL}${image}` : '/default.jpg'}
           alt={name}
           layout='fill'
           objectFit='cover'
