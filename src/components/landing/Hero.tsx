@@ -29,7 +29,7 @@ export default function Hero() {
             backgroundClip: 'text', 
           }}
         >
-          FLOWERS
+          FLOWER
         </p>
         <h1 className='text-[25px] sm:text-[35px] font-semibold text-white mb-4'>
           Spring delivered to your door
