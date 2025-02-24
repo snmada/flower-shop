@@ -89,7 +89,7 @@ export default function ProductDetailsDialog({
               ) : (
                 <div className='relative w-64 h-64'>
                   <Image
-                    src={`${process.env.NEXT_PUBLIC_AWS_S3_URL}${product?.image}`}
+                    src={process.env.NEXT_PUBLIC_AWS_S3_URL? `${process.env.NEXT_PUBLIC_AWS_S3_URL}${product?.image}` : '/default.jpg'}
                     alt={product?.name || 'Product Image'}
                     layout='fill'
                     objectFit='cover'

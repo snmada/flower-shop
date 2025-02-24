@@ -82,7 +82,10 @@ export default function ProductForm({
   isLoading = false
 }: ProductFormProps){
   const [imagePreview, setImagePreview] = useState<string | null>(
-    initialData?.image ? `${process.env.NEXT_PUBLIC_AWS_S3_URL}${initialData?.image}` : null
+    initialData?.image ? 
+      process.env.NEXT_PUBLIC_AWS_S3_URL?
+      `${process.env.NEXT_PUBLIC_AWS_S3_URL}${initialData?.image}` : '/default.jpg'
+    : null
   );  
   const [inputKey, setInputKey] = useState(0);
 
@@ -110,7 +113,12 @@ export default function ProductForm({
         category: initialData.category,
         flowers: initialData.flowers || [],
       });
-      setImagePreview(initialData?.image ? `${process.env.NEXT_PUBLIC_AWS_S3_URL}${initialData?.image}` : null);
+      setImagePreview(
+        initialData?.image ? 
+          process.env.NEXT_PUBLIC_AWS_S3_URL?
+          `${process.env.NEXT_PUBLIC_AWS_S3_URL}${initialData?.image}` : '/default.jpg'
+        : null
+      );
     }
   }, [initialData, form]);
 
